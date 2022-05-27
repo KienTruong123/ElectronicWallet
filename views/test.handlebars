@@ -1,0 +1,70 @@
+
+
+<div class="container">
+    <input id="image1" type="file" accept="image/*" single>
+    <input id="image2" type="file" accept="image/*" single>
+    <div class="text-danger">Error: {{error}}</div>
+    <button id="updateImage" class="btn btn-success">Update CMND</button>
+</div>
+<script>
+    $('#updateImage').click( async function (e){
+        console.log('click')
+        let file1 =document.getElementById('image1')
+        let file2 = document.getElementById('image2')
+
+
+
+        async function convert2Buffer(blob){
+        return new Promise((resolve) => {
+            const reader = new FileReader()
+            reader.onload = () => {
+                console.log(reader.result)
+                resolve(reader.result)
+            }
+            reader.readAsArrayBuffer(blob)
+        })
+}
+               let image1 = "a"
+        let image2 = "b"
+        image1 = await convert2Buffer(file1.files[0])
+        image2 = await convert2Buffer(file2.files[0])
+
+        console.log("Image")
+        console.log(image1)
+        console.log(image2)
+
+        let form = new FormData();
+        form.set('image1',image1)
+        form.set('image2',image2)
+        let xhr = new XMLHttpRequest();
+        
+
+
+        console.log(window.location.origin+"/upload")
+        xhr.open('POST',"/upload",true)
+        xhr.addEventListener('load',e=>{
+            console.log("loading")
+            if(xhr.readyState === 4 && xhr.status === 200){
+                //const json = JSON.parse(xhr.responseText)
+                console.log(xhr.responseText)
+                if(xhr.responseText)
+                    {
+
+                        console.log('success'+'Upload')
+                    }
+                else
+                    console.log('danger'+'Upload')                  
+            }
+            else{
+                console.log(xhr.status)
+                console.log('danger'+'Upload'+xhr.statusText)
+            }
+        })
+        let progress_bar = document.getElementById('progress-bar')
+        xhr.upload.addEventListener('progress',e=>{
+            
+        })
+        
+        xhr.send(form); 
+    })
+</script>

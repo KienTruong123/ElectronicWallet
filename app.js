@@ -6,6 +6,8 @@ var expressHandlebars = require('express-handlebars')
 var credentials = require('./credentials.js')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var tradesRouter = require('./routes/trades')
+var adminRouter = require('./routes/admin')
 var flash = require('connect-flash');
 var session = require('express-session');
 var mongoose = require('mongoose')
@@ -58,10 +60,10 @@ app.use(function (req, res, next) {
 })
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/trades', tradesRouter);
+app.use('/admin', adminRouter);
 
-app.get('/admin',(req,res)=>{
-  res.render('admin_dashboard')
-})
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

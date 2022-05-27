@@ -5,11 +5,11 @@ var router = express.Router();
 // middleware này dùng để test
 router.get('/', function(req, res, next) {
   res.send('No access support')
-  //res.render('admin_edit_user');
+  //res.render('admin_edit_trade');
 });
 
 router.get('/:id',(req,res)=>{
-  res.render('admin_edit_user')
+  res.render('trade_detail')
 })
 
 module.exports = router;
