@@ -1,0 +1,169 @@
+<div class="container-fluid">
+    <div class=" d-flex justify-content-center m-3">
+        <h1 class="text-success">Khám phá tiện ích</h1>
+    </div>
+    <div class="d-flex justify-content-center m-1">
+        <h3 class="text-secondary"> Sử dụng các tính năng trên trang một cách nhanh chóng, tiện lợi.</h3>
+    </div>
+    {{!-- MENU --}}
+    <div id="menu" class="row m-5 d-flex justify-content-center">
+        <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="row">
+                        <div class="col-2"> </div>
+                        {{!-- DATA SOURCE COLLAPSE --}}
+                        <div class="col-8 m-2 justify-content-center">
+                            <input type="radio" class="btn-check btn-card" name="btnradio" id="btnradio1"
+                                autocomplete="off" data-bs-toggle="collapse"
+                                data-bs-target="#multiCollapseNotification">
+                            <label class="btn btn-outline-success btn-card " for="btnradio1">
+                                <i class="fa-solid fa-circle-info pb-2"></i>
+                                <br>Thông báo
+                            </label>
+
+                            <input type="radio" class="btn-check btn-card" name="btnradio" id="btnradio2"
+                                autocomplete="off" data-bs-toggle="collapse" data-bs-target="#multiCollapseDeposit"
+                                checked>
+                            <label class="btn btn-outline-success btn-card " for="btnradio2">
+                                <i class="fa-solid fa-money-bill-trend-up pb-2"></i>
+                                <br>Nạp tiền
+                            </label>
+
+                            <input type="radio" class="btn-check btn-card" name="btnradio" id="btnradio3"
+                                autocomplete="off" data-bs-toggle="collapse" data-bs-target="#multiCollapseWithdraw">
+                            <label class="btn btn-outline-success btn-card pb-2" for="btnradio3">
+                                <i class="fa-solid fa-coins"></i>
+                                <br>Rút Tiền
+                            </label>
+
+                            <input type="radio" class="btn-check btn-card" name="btnradio" id="btnradio4"
+                                autocomplete="off" data-bs-toggle="collapse" data-bs-target="#multiCollapseTransfer">
+                            <label class="btn btn-outline-success btn-card" for="btnradio4">
+                                <i class="fa-solid fa-money-bill-transfer"></i>
+                                <br> Chuyển tiền
+                            </label>
+
+                            <input type="radio" class="btn-check btn-card" name="btnradio" id="btnradio5"
+                                autocomplete="off" data-bs-toggle="collapse" data-bs-target="#multiCollapseCard">
+                            <label class="btn btn-outline-success btn-card" for="btnradio5">
+                                <i class="fa-solid fa-mobile pb-2"></i>
+                                <br> Mua thẻ
+                            </label>
+
+                            <input type="radio" class="btn-check btn-card" name="btnradio" id="btnradio6"
+                                autocomplete="off" data-bs-toggle="collapse"
+                                data-bs-target="#multiCollapseTransHistory">
+                            <label class="btn btn-outline-success btn-card" for="btnradio6">
+                                <i class="fa-regular fa-clock-rotate-left"></i>
+                                <br>Lịch sử giao dịch
+                            </label>
+                        </div>
+                        {{!-- END DATA SOURCE COLLAPSE --}}
+                        <div class="col-2"> </div>
+                    </div>
+
+                </div>
+                <div class="carousel-item">
+                    <div class="row">
+                        <div class="col-2"> </div>
+                        {{!-- DATA SOURCE COLLAPSE PAGE2 --}}
+                        <div class="col-8 m-2">
+                            <input type="radio" class="btn-check btn-card" name="btnradio" id="btnradio7"
+                                autocomplete="off" data-bs-toggle="collapse" data-bs-target="#multiCollapsePassword">
+                            <label class="btn btn-outline-success btn-card" for="btnradio7">
+                                <i class="fa-solid fa-arrow-down-up-lock"></i>
+                                <br>Đổi mật khẩu
+                            </label>
+
+                            <input type="radio" class="btn-check btn-card" name="btnradio" id="btnradio8"
+                                autocomplete="off" data-bs-toggle="collapse"
+                                data-bs-target="#multiCollapseIdentifyCard">
+                            <label class="btn btn-outline-success btn-card" for="btnradio8">
+                                <i class="fa-regular fa-id-card pb-2"></i>
+                                <br>CMND
+                            </label>
+                        </div>
+                        {{!-- END DATA SOURCE COLLAPSE PAGE2 --}}
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev btn-success" type="button" data-bs-target="#carouselExampleControls"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon text-success" aria-hidden="true"></span>
+            </button>
+            <button class="carousel-control-next  btn-success" type="button" data-bs-target="#carouselExampleControls"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </button>
+        </div>
+
+        {{!-- DATA TARGET COLLAPSE --}}
+        {{!-- NOTIFICATION --}}
+        <div class="row">
+            <div class="collapse multi-collapse" id="multiCollapseNotification" data-bs-parent="#menu">
+                <div class="card card-body">
+                    Thong bao
+                </div>
+            </div>
+        </div>
+        {{!-- DEPOSIT --}}
+        <div class="row">
+            <div class="collapse multi-collapse" id="multiCollapseDeposit" data-bs-parent="#menu">
+                <div class="card card-body">
+                    Deposit
+                </div>
+            </div>
+        </div>
+        {{!-- WITHDRAW --}}
+        <div class="row">
+            <div class="collapse multi-collapse" id="multiCollapseWithdraw" data-bs-parent="#menu">
+                <div class="card card-body">
+                    Withdraw
+                </div>
+            </div>
+        </div>
+        {{!-- TRANSFER --}}
+        <div class="row">
+            <div class="collapse multi-collapse" id="multiCollapseTransfer" data-bs-parent="#menu">
+                <div class="card card-body">
+                    Transfer
+                </div>
+            </div>
+        </div>
+        {{!-- BUY CARD --}}
+        <div class="row">
+            <div class="collapse multi-collapse" id="multiCollapseCard" data-bs-parent="#menu">
+                <div class="card card-body">
+                    Mua the
+                </div>
+            </div>
+        </div>
+        {{!-- TRANS HISTORY --}}
+        <div class="row">
+            <div class="collapse multi-collapse" id="multiCollapseTransHistory" data-bs-parent="#menu">
+                <div class="card card-body">
+                    Lich su giao dich
+                </div>
+            </div>
+        </div>
+        {{!-- PASSWORD --}}
+        <div class="row">
+            <div class="collapse multi-collapse" id="multiCollapsePassword" data-bs-parent="#menu">
+                <div class="card card-body">
+                    PAss
+                </div>
+            </div>
+        </div>
+        {{!-- CMND --}}
+        <div class="row">
+            <div class="collapse multi-collapse" id="multiCollapseIdentifyCard" data-bs-parent="#menu">
+                <div class="card card-body">
+                    CMND
+                </div>
+            </div>
+        </div>
+        {{!-- END DATA TARGET COLLAPSE --}}
+    </div>
+    {{!-- END MENU --}}
+</div>
