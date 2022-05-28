@@ -2,7 +2,7 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
-var expressHandlebars = require('express-handlebars')
+var hbs = require('express-handlebars')
 var credentials = require('./credentials.js')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -12,18 +12,19 @@ var flash = require('connect-flash');
 var session = require('express-session');
 var mongoose = require('mongoose')
 
+
 var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'handlebars');
-app.engine('handlebars', expressHandlebars.engine({
-  defaultLayout: 'main',
-  helpers: {
-      ifEquals: function(arg1, arg2, options) {
-          return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
-      },
-  },
-}))
+app.set('view engine', 'hbs');
+
+app.engine( 'hbs', hbs.engine( { 
+  extname: 'hbs', 
+  defaultLayout: 'main', 
+  layoutsDir: __dirname + '/views/layouts/',
+  partialsDir: __dirname + '/views/menu'
+} ) );
+
 app.use(flash());
 app.use(session({
   secret: 'kiennguyentrong',

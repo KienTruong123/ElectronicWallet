@@ -1,13 +1,51 @@
-.text-light-gray{
+.btn-card {
+    width: 7rem !important;
+    height: 5rem !important;
+    background-color: rgb(240, 240, 240);
+}
+
+.btn-buy-card {
+    width: 12rem !important;
+    height: 4rem !important;
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+}
+
+.icon{
+    width: 4rem !important;
+    height: 4rem !important;
+}
+
+.carousel-control-prev-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg'  viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E") !important;
+}
+
+.carousel-control-next-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg'  viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E") !important;
+}
+
+
+.text-light-gray {
     color: rgb(208, 208, 208);
 }
 
-a:hover, a:visited, a:link, a:active{
+
+body {
+    background-image: url("https://visme.co/blog/wp-content/uploads/2017/07/50-Beautiful-and-Minimalist-Presentation-Backgrounds-05.jpg");
+}
+
+a:hover,
+a:visited,
+a:link,
+a:active {
     text-decoration: none;
 }
 
-.btn-card{
-    width: 7rem !important;
-    height: 5rem !important;
-    background-color:rgb(243, 243, 243);
+.card-body{
+    border-radius: 20px 20px;
+}
+
+#buycard{
+    border-radius: 20px 20px;
+    background-color: rgb(240, 240, 240);
 }

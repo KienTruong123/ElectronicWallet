@@ -10,7 +10,7 @@
         <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <div class="row">
+                    <div class="row border ">
                         <div class="col-2"> </div>
                         {{!-- DATA SOURCE COLLAPSE --}}
                         <div class="col-8 m-2 justify-content-center">
@@ -60,12 +60,10 @@
                             </label>
                         </div>
                         {{!-- END DATA SOURCE COLLAPSE --}}
-                        <div class="col-2"> </div>
                     </div>
-
                 </div>
                 <div class="carousel-item">
-                    <div class="row">
+                    <div class="row border">
                         <div class="col-2"> </div>
                         {{!-- DATA SOURCE COLLAPSE PAGE2 --}}
                         <div class="col-8 m-2">
@@ -88,13 +86,13 @@
                     </div>
                 </div>
             </div>
-            <button class="carousel-control-prev btn-success" type="button" data-bs-target="#carouselExampleControls"
+            <button class="carousel-control-prev btn btn-light" type="button" data-bs-target="#carouselExampleControls"
                 data-bs-slide="prev">
-                <span class="carousel-control-prev-icon text-success" aria-hidden="true"></span>
+                <span class="carousel-control-prev-icon " aria-hidden="true"></span>
             </button>
-            <button class="carousel-control-next  btn-success" type="button" data-bs-target="#carouselExampleControls"
+            <button class="carousel-control-next  btn btn-light" type="button" data-bs-target="#carouselExampleControls"
                 data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="carousel-control-next-icon text-dark" aria-hidden="true"></span>
             </button>
         </div>
 
@@ -103,7 +101,7 @@
         <div class="row">
             <div class="collapse multi-collapse" id="multiCollapseNotification" data-bs-parent="#menu">
                 <div class="card card-body">
-                    Thong bao
+                    {{>notification}}
                 </div>
             </div>
         </div>
@@ -111,7 +109,7 @@
         <div class="row">
             <div class="collapse multi-collapse" id="multiCollapseDeposit" data-bs-parent="#menu">
                 <div class="card card-body">
-                    Deposit
+                    {{>deposit}}
                 </div>
             </div>
         </div>
@@ -119,7 +117,7 @@
         <div class="row">
             <div class="collapse multi-collapse" id="multiCollapseWithdraw" data-bs-parent="#menu">
                 <div class="card card-body">
-                    Withdraw
+                    {{>withdraw}}
                 </div>
             </div>
         </div>
@@ -127,7 +125,7 @@
         <div class="row">
             <div class="collapse multi-collapse" id="multiCollapseTransfer" data-bs-parent="#menu">
                 <div class="card card-body">
-                    Transfer
+                    {{>transfer}}
                 </div>
             </div>
         </div>
@@ -135,7 +133,7 @@
         <div class="row">
             <div class="collapse multi-collapse" id="multiCollapseCard" data-bs-parent="#menu">
                 <div class="card card-body">
-                    Mua the
+                    {{>card}}
                 </div>
             </div>
         </div>
@@ -143,7 +141,7 @@
         <div class="row">
             <div class="collapse multi-collapse" id="multiCollapseTransHistory" data-bs-parent="#menu">
                 <div class="card card-body">
-                    Lich su giao dich
+                    {{>trans-history}}
                 </div>
             </div>
         </div>
@@ -151,7 +149,7 @@
         <div class="row">
             <div class="collapse multi-collapse" id="multiCollapsePassword" data-bs-parent="#menu">
                 <div class="card card-body">
-                    PAss
+                     {{>password}}
                 </div>
             </div>
         </div>
@@ -159,7 +157,7 @@
         <div class="row">
             <div class="collapse multi-collapse" id="multiCollapseIdentifyCard" data-bs-parent="#menu">
                 <div class="card card-body">
-                    CMND
+                    {{>identif-card}}
                 </div>
             </div>
         </div>
