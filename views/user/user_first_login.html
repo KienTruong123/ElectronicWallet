@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập</title>
+    <title>Đăng nhập lần đầu</title>
 </head>
 <style>
     .u-login-gradient-custom {
@@ -42,29 +42,29 @@
                                 <div class="card-body p-4">
                                     <!-- TODO: DO SOMETHING WITH ALERT-->
                                     <div class="alert alert-danger" role="alert">
-                                        Danger/ success message
+                                        Danger/ message
                                     </div>
 
-                                    <h3 class="text-center mb-3">ĐĂNG NHẬP</h3>
+                                    <h3 class="text-center mb-3">ĐỔI MẬT KHẨU</h3>
+                                    <div class="alert alert-info" role="alert">
+                                        Do bạn đăng nhập lần đầu tiên, trước hết hãy đổi mật khẩu.
+                                    </div>
                                     <div class="row pt-1">
                                         <!-- TODO: FILL IN URL IN ACTION-->
                                         <form action="/" method="POST">
                                             <div class="form-group pb-3">
-                                                <label for="userid" class="fw-bold pb-3">UserID</label>
-                                                <input type="text" class="form-control p-2" id="userid"
-                                                     placeholder="Vui lòng nhập User ID">
-                                            </div>
-                                            <div class="form-group pb-3">
-                                                <label for="userpass" class="fw-bold pb-3">Mật khẩu</label>
+                                                <label for="userpass" class="fw-bold pb-3">Mật khẩu mới</label>
                                                 <input type="password" class="form-control p-2" id="userpass"
                                                     placeholder="Vui lòng nhập mật khẩu">
                                             </div>
-                                            <!-- TODO: FILL IN URL SUBMIT BUTTON-->
-                                            <div class="d-flex justify-content-center py-4">
-                                                <button type="submit" class="btn btn-success u-login-btn-login">Đăng nhập</button>
+                                            <div class="form-group pb-3">
+                                                <label for="userpass" class="fw-bold pb-3">Nhập lại Mật khẩu mới</label>
+                                                <input type="password" class="form-control p-2" id="userpass"
+                                                    placeholder="Vui lòng Nhập lại Mật khẩu mới">
                                             </div>
-                                            <div class="d-flex justify-content-end">
-                                                <a href="user_register.html" class="text-success">Đăng ký tài khoản</a>
+                                            <!-- TODO: FILL IN URL SUBMIT BUTTON-->
+                                            <div class="d-flex justify-content-center">
+                                                <button type="submit" class="btn btn-success u-login-btn-login">Lưu thay đổi</button>
                                             </div>
                                         </form>
                                     </div>
