@@ -1,0 +1,40 @@
+<div class="container">
+    <!-- TODO: ADD ACTION URL -->
+    <form action="" method="post">
+        <h3> Chuyển tiền cho người dùng khác</h3>
+        <div class="mb-3">
+            <label for="t_reveiver_phone" class="form-label">Số điện thoại người nhận</label>
+            <input type="text" class="form-control" id="t_reveiver_phone" required
+                placeholder="Vui lòng nhập Số điện thoại người nhận">
+        </div>
+        <div class="mb-3">
+            <label for="t_reveiver_desc" class="form-label">Ghi chú thêm</label>
+            <input type="text" class="form-control" id="t_reveiver_desc" required
+                placeholder="Vui lòng nhập Ghi chú thêm">
+        </div>
+        <div class="mb-3">
+            <label for="t_reveiver_money" class="form-label">Số tiền cần chuyển</label>
+            <input type="number" class="form-control" id="t_reveiver_money" min="1" value="1" required>
+        </div>
+        <div class="mb-1">
+            <label for="t_reveiver_otp" class="form-label">Mã xác thực OTP</label>
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" id="t_reveiver_otp" placeholder="Vui lòng nhập Mã xác thực OTP"
+                aria-describedby="button_send_otp" required>
+            <form action="/" method="post">
+            
+            <!--TODO: CHANGE ID TO SESSION USER ID FROM ONCLICK BTN -->
+                <button class="btn btn-primary" type="submit" id="button_send_otp_transfer" onclick="sendOTP('1234')">Gửi mã OTP</button>
+            </form>
+
+        </div>
+        <!-- TODO: ADD DYNAMIC RANGE --->
+        <div class="mt-3 mb-3">
+            <h4 class="mt-3 text-end">Phí dịch vụ (5%): <span class="text-primary" id="t_reveiver_fee_withdraw">0
+                    đ</span></h4>
+            <h4 class="mt-3 text-end">Tổng tiền: <span class="text-danger" id="t_reveiver_total">0 đ</span></h4>
+        </div>
+        <button type="submit" class="btn btn-success u-btn-submit">Submit</button>
+    </form>
+</div>

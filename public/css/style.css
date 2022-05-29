@@ -49,3 +49,7 @@ a:active {
     border-radius: 20px 20px;
     background-color: rgb(240, 240, 240);
 }
+
+.u-btn-submit{
+    width:200px;
+}
