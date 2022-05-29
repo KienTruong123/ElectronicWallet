@@ -1,3 +1,8 @@
+//
+$('#multiCollapseCards').collapse({
+    toggle: false
+  })
+
 $('#slQuantity').hide();
 $('#slcard').change(function () {
     opt = $(this).val();
