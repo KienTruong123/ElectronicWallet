@@ -1,0 +1,254 @@
+<head>
+    <title>Thông tin người dùng</title>
+</head>
+
+<style>
+.gradient-custom {
+/* fallback for old browsers */
+background: #9ff665;
+
+/* Chrome 10-25, Safari 5.1-6 */
+background: -webkit-linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1));
+
+/* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+background: linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1))
+}
+</style>
+
+<section class="vh-100" style="background-color: #f4f5f7;">
+
+    <a href="/admin"><button class="btn btn-primary " style="font-size: 3vh;">Quay lại</button></a>
+    {{!-- Toast --}}
+
+
+                {{!-- Toast  --}}
+    <div style="display: sticky!important; right: 1vw!important">
+            <div class="d-flex justify-content-end flex-c" >
+    <div id="toastDialog" class="toast toast-container hide"  data-autohide="true" data-delay="6000">
+      <div class="toast-header" style="background-color: #bdf3bd;">
+          <i class="fa-solid fa-bell" style="color:#f6ea0b ;"></i>&nbsp;
+          <strong class="mr-auto"> Upload </strong>
+          <button type="button" class="ml-2 mb-1 btn-close" data-dismiss="toast" aria-label="Close">
+              <span aria-hidden="true"></span>
+          </button>
+      </div>
+      <div class="toast-body" style="width: 100%;">
+      Toast body
+      </div>
+    </div>
+    </div> 
+    </div>
+
+
+        </div>
+
+    {{!-- Toast --}}
+
+    <p class="text-dark">{{user}}</p>
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center ">
+      <div class="col col-lg-8 mb-4 mb-lg-0">
+        <div class="card mb-3" style="border-radius: .5rem;">
+          <div class="row g-0">
+            <div class="col-md-4 gradient-custom text-center text-white"
+              style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
+                alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
+              <h5 id="name">{{name}}</h5>
+              <p>{{id}}</p>
+              {{#ifEquals status "Active"}}
+                    <h4 class="text-success">Đã xác thực</h4>
+              {{else}}
+                    {{#ifEquals status "Waiting"}}
+                        <h4 class="text-info">Chờ duyệt</h4>
+                    {{else}}           
+                        <h4 class="text-danger">Vô hiệu hóa </h4>
+                    {{/ifEquals}}
+              {{/ifEquals}}
+              {{#ifEquals secure_status 6}}
+                    <h6 class="text-danger text-decoration-underline fst-italic">Khóa vô thời hạn do đăng nhập bất thường</h6>
+              {{/ifEquals}}
+            </div>
+            <div class="col-md-8">
+              <div class="card-body p-4">
+                <h6>Liên hệ</h6>
+                <hr class="mt-0 mb-4">
+                <div class="row pt-1">
+                  <div class="col-6 mb-3">
+                    <h6>Email</h6>
+                    <p class="text-muted">{{email}}</p>
+                  </div>
+                  <div class="col-6 mb-3">
+                    <h6>Điện thoại</h6>
+                    <p class="text-muted">{{phone}}</p>
+                  </div>
+                </div>
+                <h6>Thông tin</h6>
+                <hr class="mt-0 mb-4">
+                <div class="row pt-1">
+                  <div class="col-6 mb-3">
+                    <h6>Ngày Sinh</h6>
+                    <p class="text-muted">{{birth}}</p>
+                  </div>
+                  <div class="col-6 mb-3">
+                    <h6>Địa điểm</h6>
+                    <p class="text-muted">{{address}}</p>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    {{#ifEquals status "Waiting"}}
+                        <button class="btn btn-success mx-2" onclick="acceptModal(this)" >Xác Minh</button>
+                        <button class="btn btn-danger mx-2" onclick="deleteModal(this)" >Vô hiệu hóa</button>
+                        <button class="btn btn-warning mx-2" onclick="requestModal(this)" >Yêu cầu cập nhật</button>
+                    {{else}}   
+                        {{#ifEquals status "Ban"}}      
+                            <button class="btn btn-primary mx-2" onclick="recoverModal(this)" >Khôi phục</button>                       
+                        {{/ifEquals}}
+                    {{/ifEquals}}
+
+                    {{#ifGreater secure_status 5}}
+                         <button class="btn btn-success mx-2" onclick="unlockModal(this)" >Mở khóa</button>
+                    {{/ifGreater}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{{!-- Delete Modal --}}
+    <div class="modal fade" id="confirm-delete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Vô hiệu hóa người dùng</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Bạn có không đồng ý kích hoạt và muốn vô hiệu hóa <strong class="name">unknown</strong> ?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger confirm-delete-btn" onclick="adminUpdateUser('{{id}}','inactive')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{{!-- Accept Modal --}}
+    <div class="modal fade" id="confirm-accept">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Xác minh người dùng </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Bạn có muốn xác minh <strong class="name">unknown</strong> ?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success confirm-accept-btn" onclick="adminUpdateUser('{{id}}','active')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{{!-- Request Modal --}}
+    <div class="modal fade" id="confirm-request">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Yều cầu cập nhật </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Bạn có muốn yêu cầu <strong class="name">unknown</strong> cập nhật thông tin ?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success confirm-request-btn" onclick="adminUpdateUser('{{id}}','request')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{{!-- Unlock Modal --}}
+    <div class="modal fade" id="confirm-unlock">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Mở khóa</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Bạn có muốn mở khóa cho <strong class="name">unknown</strong> ?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success confirm-unlock-btn" onclick="adminUpdateUser('{{id}}','unlock')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {{!-- Recover Modal --}}
+    <div class="modal fade" id="confirm-recover">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Khôi phục </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Bạn đã vô hiệu hóa tài khoản này, bạn có muốn khôi phục lại <strong class="name">unknown</strong> ?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success confirm-recover-btn" onclick="adminUpdateUser('{{id}}','recover')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{{!-- Save Modal --}}
+    <div class="modal fade" id="confirm-save">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Lưu thông tin <strong class="name">unknown</strong></h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Bạn có muốn lưu thông tin người dùng lại  ?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success confirm-save-btn" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>

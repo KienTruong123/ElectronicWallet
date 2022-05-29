@@ -22,6 +22,12 @@ app.engine('handlebars', expressHandlebars.engine({
       ifEquals: function(arg1, arg2, options) {
           return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
       },
+      ifNotEquals: function(arg1, arg2, options) {
+        return (arg1 != arg2) ? options.fn(this) : options.inverse(this);
+    },
+    ifGreater: function(arg1,arg2,options){
+      return (arg1 > arg2) ? options.fn(this) : options.inverse(this);
+    }
   },
 }))
 app.use(flash());
@@ -49,7 +55,7 @@ switch (app.get('env')) {
         mongoose.connect(credentials.mongo.production.connectionString, opts)
         break;
     default:
-        throw new Error('Unknown excution environment'+ app.get('env'));
+        throw new Error('Unknown execution environment'+ app.get('env'));
 }
 
 //route setup
