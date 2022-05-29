@@ -1,0 +1,145 @@
+<head>
+    <title>Trade Detail</title>
+</head>
+
+
+<section class="vh-100" style="background-color: #f4f5f7;">
+    <a href="/admin"><button class="btn btn-primary " style="font-size: 3vh;">Quay lại</button></a>
+        <div style="display: sticky!important; right: 1vw!important">
+            <div class="d-flex justify-content-end flex-c" >
+    <div id="toastDialog" class="toast toast-container hide"  data-autohide="true" data-delay="6000">
+      <div class="toast-header" style="background-color: #bdf3bd;">
+          <i class="fa-solid fa-bell" style="color:#f6ea0b ;"></i>&nbsp;
+          <strong class="mr-auto"> Giao dịch chấp thuận </strong>
+          <button type="button" class="ml-2 mb-1 btn-close" data-dismiss="toast" aria-label="Close">
+              <span aria-hidden="true"></span>
+          </button>
+      </div>
+      <div class="toast-body" style="width: 100%;">
+      Toast body
+      </div>
+    </div>
+    </div> 
+    </div>
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center ">
+      <div class="col col-lg-8 mb-4 mb-lg-0">
+        <div class="card mb-3" style="border-radius: .5rem;">
+          <div class="row g-0">
+            <div class="col-md-2 gradient-custom text-center text-white"
+              style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
+                alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
+              <h6 class="text-dark">Sender</h6>
+              <h5 id="name">{{sender_name}}</h5>
+              <p class="px-2">{{sender_id}}</p>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body p-4">
+                <h6>Sender Information</h6>
+                <hr class="mt-0 mb-4">
+                <div class="row pt-1">
+                  <div class="col-6 mb-3">
+                    <h6>Email</h6>
+                    <p class="text-muted">{{sender_email}}</p>
+                  </div>
+                  <div class="col-6 mb-3">
+                    <h6>Current Balance</h6>
+                    <p class="text-muted">{{sender_balance}}</p>
+                  </div>
+                </div>
+                <h6>Receiver Information</h6>
+                <hr class="mt-0 mb-4">
+                <div class="row pt-1">
+                  <div class="col-6 mb-3">
+                    <h6>Email</h6>
+                    <p class="text-muted">{{receiver_email}}</p>
+                  </div>
+                  <div class="col-6 mb-3">
+                    <h6>Current Balance</h6>
+                    <p class="text-muted">{{receiver_balance}}</p>
+                  </div>
+                </div>
+                <h6><i class="fa-solid fa-money-check"></i> Trade Information</h6>
+                <hr class="mt-0 mb-4">
+                <div class="row pt-1">
+                  <div class="col-4 mb-3">
+                    <h6>Amount</h6>
+                    <p class="text-muted">{{amounts}}</p>
+                  </div>
+                  <div class="col-4 mb-3">
+                    <h6>Sent At</h6>
+                    <p class="text-muted">{{sentAt}}</p>
+                  </div>
+                  <div class="col-4 mb-3">
+                    <h6>Status</h6>
+                    <p class="text-muted">{{status}}</p>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-danger mx-3" onclick="trade_deleteModal(this)">Hủy</button>
+                    <button class="btn btn-success mx-3" onclick="trade_acceptModal(this)">Xác Minh</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2 gradient-custom text-center text-white"
+              style="border-top-right-radius: .5rem; border-bottom-right-radius: .5rem;">
+              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp"
+                alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
+                <h6 class="text-dark">Receiver</h6>
+                <h5 id="name">{{receiver_name}}</h5>
+                <p class="px-2">{{receiver_id}}</p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{{!-- Delete Modal --}}
+    <div class="modal fade" id="confirm-delete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Hủy giao dịch</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Bạn có muốn hủy bỏ xác minh phiên giao dịch này không ?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger confirm-delete-btn" onclick="adminUpdateTrade('{{id}}','Reject')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{{!-- Accept Modal --}}
+    <div class="modal fade" id="confirm-accept">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Chấp thuận giao dịch </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Bạn có muốn duyệt qua phiên giao dịch này không ?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success confirm-accept-btn" onclick="adminUpdateTrade('{{id}}','Approve')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+

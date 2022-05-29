@@ -1,0 +1,164 @@
+/* General CSS */
+body {
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-image: url("https://visme.co/blog/wp-content/uploads/2017/07/50-Beautiful-and-Minimalist-Presentation-Backgrounds-05.jpg");
+    background-repeat: no-repeat;
+    background-size: cover ;
+}
+/* end of general */
+
+.btn-card {
+    width: 7rem !important;
+    height: 5rem !important;
+    background-color: rgb(240, 240, 240);
+}
+
+.btn-buy-card {
+    width: 12rem !important;
+    height: 4rem !important;
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+}
+
+.icon{
+    width: 4rem !important;
+    height: 4rem !important;
+}
+
+.carousel-control-prev-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg'  viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E") !important;
+}
+
+.carousel-control-next-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg'  viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E") !important;
+}
+
+
+.text-light-gray {
+    color: rgb(208, 208, 208);
+}
+
+
+
+a:hover,
+a:visited,
+a:link,
+a:active {
+    text-decoration: none;
+}
+
+.card-body{
+    border-radius: 20px 20px;
+}
+
+#buycard{
+    border-radius: 20px 20px;
+    background-color: rgb(240, 240, 240);
+}
+
+
+/* This part is Trong. Css  css for nav bar*/
+
+/* for nav bar */
+.navbar-toggler {
+    width: 6vw;
+    height: 6vw;
+    position: relative;
+    transition: .5s ease-in-out;
+    border: 0px !important;
+    border-color: white !important;
+  }
+  
+  
+  .navbar-toggler:focus,
+  .navbar-toggler:active,
+  .navbar-toggler-icon:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: white;
+    border: 0;
+    position: relative;
+  }
+  
+  .navbar-toggler span {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .toggler-icon {
+    display: block;
+    position: absolute;
+    height: 5px;
+    width: 100%;
+    background: #d3531a;
+    border-radius: 1px;
+    opacity: 1;
+    left: 0;
+    transform: rotate(0deg);
+    transition: .25s ease-in-out;
+  }
+  
+  .middle-bar {
+    margin-top: 0px;
+  }
+  
+  
+  /* State when the navbar is collapsed */
+  
+  .navbar-toggler.collapsed .top-bar {
+    position: absolute;
+    top: 0px;
+    transform: rotate(0deg);
+  }
+  
+  .navbar-toggler.collapsed .middle-bar {
+    opacity: 1;
+    position: absolute;
+    top: 10px;
+    filter: alpha(opacity=100);
+  }
+  
+  .navbar-toggler.collapsed .bottom-bar {
+    position: absolute;
+    top: 20px;
+    transform: rotate(0deg);
+  }
+  
+  /* when navigation is clicked */
+  
+  .navbar-toggler .top-bar {
+    top: inherit;
+    transform: rotate(135deg);
+  }
+  
+  .navbar-toggler .middle-bar {
+    opacity: 0;
+    top: inherit;
+    filter: alpha(opacity=0);
+  }
+  
+  .navbar-toggler .bottom-bar {
+    top: inherit;
+    transform: rotate(-135deg);
+  }
+  
+  /* Color of 3 lines */
+  
+  .navbar-toggler.collapsed .toggler-icon {
+    background: linear-gradient( 263deg, rgba(252,74,74,1) 0%, rgba(0,212,255,1) 100% );
+  }
+
+  /* gradient for user page */
+  .gradient-custom {
+    /* fallback for old browsers */
+    background: #9ff665;
+    
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1));
+    
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1))
+    }
+  /* end of gradient */
+
+  /* End of Trong. Css */
