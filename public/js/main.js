@@ -18,4 +18,13 @@ window.addEventListener("load", () => {
         u_menu_fee_withdraw.innerHTML = (u_withdraw.value * 0.05).toLocaleString() +"đ";
         u_menu_total.innerHTML = (u_withdraw.value * 1.05).toLocaleString() +"đ";
     });
+
+
+    let u_deposit_money = document.querySelector("#deposit_money")
+    let u_deposit_total = document.querySelector("#u-deposit-total")
+
+    u_deposit_money.addEventListener("change",()=>{
+        u_deposit_total.innerHTML = (u_deposit_money.value * 1).toLocaleString() +"đ";
+    })
+
 })
