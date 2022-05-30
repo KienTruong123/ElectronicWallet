@@ -4,7 +4,10 @@
 
 
 <section class="vh-100" style="background-color: #f4f5f7;">
-    <a href="/admin"><button class="btn btn-primary " style="font-size: 3vh;left: 1vw;top: 1vw">Quay lại</button></a>
+        <div class="">
+        <a href="/admin"><button class="btn btn-primary " 
+        style="position: absolute;font-size: 3vh;left: 1vw;top: 1vw">Quay lại</button></a>
+    </div>
         <div style="display: sticky!important; right: 1vw!important">
             <div class="d-flex justify-content-end flex-c" >
     <div id="toastDialog" class="toast toast-container hide"  data-autohide="true" data-delay="6000">
@@ -70,7 +73,7 @@
                   </div>
                   <div class="col-4 mb-3">
                     <h6>Gửi vào</h6>
-                    <p class="text-muted">{{trade.sentAt}}</p>
+                    <p class="text-muted">{{trade.createdAt}}</p>
                   </div>
                   <div class="col-4 mb-3">
                     <h6>Trạng thái</h6>

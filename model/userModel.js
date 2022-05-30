@@ -19,6 +19,8 @@ const UserSchema = new Schema({
     status: String,
     secure_status: Number,
     lockedAt: Date,
+    smsCode: String,
+    expiredTime: Date,
 })
 
 module.exports = new mongoose.model('a_user',UserSchema);

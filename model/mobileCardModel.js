@@ -3,7 +3,6 @@ const Schema = mongoose.Schema
 
 const MobileCardSchema = new Schema({
     host: String,
-    host_id: String,
     code: String,
     price: Number
 })

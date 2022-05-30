@@ -94,8 +94,8 @@ router.get('/', async function(req, res, next) {
 
 router.get('/users/:id', async (req,res)=>{
 
-  let user = User.findOne({_id: req.params.id}).lean()
-  .then((result)=>{
+  User.findOne({_id: req.params.id}).lean()
+  .then( async (result)=>{
     if(!result)
       {
         req.flash('message',"Can't find user with id: "+req.params.id) 
@@ -104,10 +104,33 @@ router.get('/users/:id', async (req,res)=>{
       }
       else{
         let user = result
-        res.render('admin/admin_edit_user',{user: user,admin: true})
+        let lastMonth = new Date()
+        lastMonth.setMonth(lastMonth.getMonth()-1)
+        let list = await Trade.find({$or: [
+          { 'sender_id': req.params.id },
+          { 'receiver_id': req.params.id }
+        ],createdAt: { $lte: new Date(), $gte: lastMonth }}).lean()
+
+        let trade_list = JSON.parse(JSON.stringify(list));
+        
+        for(var i=0;i<trade_list.length;i++){
+          let sender =  await User.find({_id: trade_list[i].sender_id}).lean()
+          let receiver = await User.find({_id: trade_list[i].receiver_id}).lean()
+          trade_list[i].sender_name = sender[0] === undefined ? "Unknown" : sender[0].name != undefined ? sender[0].name : "Unknown"
+          trade_list[i].receiver_name = receiver[0] === undefined ? "Unknown" : receiver[0].name != undefined ? receiver[0].name : "Unknown"
+          trade_list[i].createdAt = moment(trade_list[i].createdAt).format('L') +' '+ moment(trade_list[i].createdAt).format('LTS');
+          //conver to VND format 
+          trade_list[i].amount =  trade_list[i].amount.toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
+
+        }
+
+        console.log("asansa")
+        console.log(trade_list)
+        res.render('admin/admin_edit_user',{user: user,admin: true,trade_list: trade_list})
       }
   })
   .catch(err=>{
+    console.log(err)
     req.flash('message',"Something went wrong. Can't find user with id: "+req.params.id) 
     res.redirect('/admin')
   })
@@ -219,8 +242,10 @@ router.post('/updateUser',async (req,res)=>{
 })
 
 router.get('/trades/:id',async (req,res)=>{
-  Trade.findOne({_id: req.params.id})
+  Trade.findOne({_id: req.params.id}).lean()
   .then( async (result)=>{
+    console.log("RESULT ne")
+    console.log(result)
     if(!result)
       {
         req.flash('message',"Can't find transaction with id: "+req.params.id) 
@@ -233,9 +258,9 @@ router.get('/trades/:id',async (req,res)=>{
         let trade = {}
         for (var x in result) 
           trade[x] = result[x];
-         
 
-        
+
+         
 
         let sender =  await User.find({_id: result.sender_id}).lean()
         let receiver = await User.find({_id: result.receiver_id}).lean()
@@ -246,11 +271,12 @@ router.get('/trades/:id',async (req,res)=>{
         trade.sender_email = sender[0].email != undefined ? sender[0].email : "Unknown"
         trade.receiver_email = receiver[0].email != undefined ? receiver[0].email : "Unknown"
         trade.createdAt = moment(trade.createdAt).format('L') +' '+ moment(trade.createdAt).format('LTS');
-        trade.sentAt = moment(trade.createdAt).format('L') +' '+ moment(trade.createdAt).format('LTS');
         //conver to VND format 
         trade.amounts =  trade.amount.toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
         
+        console.log("trade ne")
         console.log(trade)
+        //console.log(trade)
         res.render('admin/admin_edit_trade',{trade: trade,admin: true})
       }
   })
@@ -281,13 +307,23 @@ router.post('/updateTrade', async (req,res)=>{
   const update = { status: type };
   if(trade.status=='Waiting'){
     Trade.findOneAndUpdate(filter, update)
-    .then(t=>{
+    .then(async t=>{
       if(t)
         {
-          if(type == 'Reject')
+          if(type == 'Approve'){
+            let filter = { _id: t.sender_id };
+            let update = { $inc: {balance: - t.amount} };
+            await User.findOneAndUpdate(filter,update)
+
+            filter = { _id: t.receiver_id };
+            update = { $inc: {balance: + t.amount} };
+            await User.findOneAndUpdate(filter,update)
+
             return res.json({valid: true,message: "Transaction is "+type})
-          else
+          }
+          else{
             return res.json({valid: true,message: "Transaction is "+type})
+          }
         }
       else
         return res.json({valid: false,message: "Can't find transaction with id "+id})

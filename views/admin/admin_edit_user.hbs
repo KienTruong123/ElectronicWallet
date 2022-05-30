@@ -107,6 +107,36 @@
         </div>
       </div>
     </div>
+    
+    <h4>Các giao dịch trong 1 tháng gần đây</h4>
+
+    <div class="row d-flex justify-content-center align-items-center ">
+        <table class="table table-hover table-striped border">
+            <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Sender</th>
+                    <th>Receiver</th>
+                    <th>Amount</th>
+                    <th>Created At</th>
+                    <th>Status</th>
+                  </tr>
+            </thead>
+            <tbody>
+
+                {{#each trade_list}}
+                    <tr>
+                       <td><a href="../trades/{{_id}}">{{_id}}</a></td>
+                        <td><a href="./{{sender_id}}">{{sender_name}}</a></td>
+                    <td> <a href="./{{receiver_id}}">{{receiver_name}}</td>
+                    <td>{{amount}}</td>
+                    <td>{{createdAt}}</td>
+                    <td>{{status}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
   </div>
 </section>
 
