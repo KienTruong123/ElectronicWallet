@@ -19,6 +19,16 @@ router.get('/login', function (req, res, next) {
   }
 });
 
+router.get('/logout', function (req, res, next) {
+  if(req.session.user_id){
+    req.session.destroy();
+    res.redirect('/login');
+  }
+  else{
+    res.redirect('/')
+  }
+})
+
 router.post('/login', function (req, res, next) {
   let uid = req.body.userid
   let pass = req.body.userpass
