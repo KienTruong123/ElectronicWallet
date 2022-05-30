@@ -21,4 +21,4 @@ const UserSchema = new Schema({
     lockedAt: Date,
 })
 
-module.exports = new mongoose.model('a_user',UserSchema);
+module.exports = mongoose.model('a_user',UserSchema);
