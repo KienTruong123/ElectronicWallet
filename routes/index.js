@@ -4,11 +4,12 @@ var sendmail = require('../libs/sendmail');
 var random = require('../libs/random');
 const bcrypt = require('bcrypt')
 const a_user = require('../model/userModel')
+const card = require('../model/mobileCardModel')
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
   if(req.session.user_id){
-    res.render('index', { title: 'Express' });
+    res.render('index', { title: 'KTM',user: req.session.user });
   }
   else{
     return res.redirect('/login')
@@ -55,6 +56,7 @@ router.post('/login', function (req, res, next) {
         //console.log(match)
         if (match) {
           req.session.user_id = uid
+          req.session.user =result
           return res.redirect('/')
         }
         else {
@@ -85,11 +87,34 @@ router.get('/register', function (req, res, next) {
   //sendmail.validateRegister("xxx@mail");
 });
 
-//TODO: /REGISTER POST
-
+// Generate cards
 router.get('/card',(req,res)=>{
-  //console.log(random.makeCard("11111",5))
-  res.render('user/register')
+  const cards=[]
+  for (let index = 0; index < 20; index++) {
+    cards.push({code: random.makeCard("11111",5), price : 10000 })
+    cards.push({code: random.makeCard("11111",5), price : 20000 })
+    cards.push({code: random.makeCard("11111",5), price : 50000 })
+    cards.push({code: random.makeCard("11111",5), price : 100000 })
+  }
+  for (let index = 0; index < 20; index++) {
+    cards.push({code: random.makeCard("22222",5), price : 10000 })
+    cards.push({code: random.makeCard("22222",5), price : 20000 })
+    cards.push({code: random.makeCard("22222",5), price : 50000 })
+    cards.push({code: random.makeCard("22222",5), price : 100000 })
+  }
+  for (let index = 0; index < 20; index++) {
+    cards.push({code: random.makeCard("33333",5), price : 10000 })
+    cards.push({code: random.makeCard("33333",5), price : 20000 })
+    cards.push({code: random.makeCard("33333",5), price : 50000 })
+    cards.push({code: random.makeCard("33333",5), price : 100000 })
+  }
+ 
+ (async function(){
+  const insertMany = await card.insertMany(cards);
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify(insertMany)); 
+})();
+
 })
 
 module.exports = router;
