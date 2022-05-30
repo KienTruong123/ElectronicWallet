@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var sendmail = require('../libs/sendmail');
+var random = require('../libs/random');
 const bcrypt = require('bcrypt')
-
 const a_user = require('../model/userModel')
 
 /* GET home page. */
@@ -79,8 +79,9 @@ router.get('/register', function (req, res, next) {
   res.render('user/register', { title: 'Register', layout: "login" });
 });
 
-router.get('/profile', (req, res) => {
-  res.render('profile')
+router.get('/card',(req,res)=>{
+  console.log(random.makeCard("11111",5))
+  res.render('user/register')
 })
 
 module.exports = router;

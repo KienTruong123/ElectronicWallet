@@ -84,3 +84,7 @@ a:active {
 .u-login-btn-login {
     width: 50%;
 }
+
+#showCard{
+    display: none;
+}

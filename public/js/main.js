@@ -49,16 +49,16 @@ window.addEventListener("load", () => {
         let t_count = 60
 
         let timer = setInterval(() => {
-            if(t_count ==0){
+            if (t_count == 0) {
                 clearInterval(timer)
                 button_send_otp_transfer.innerHTML = 'Gửi mã OTP'
             }
-            else{
+            else {
                 t_count--;
-                button_send_otp_transfer.innerHTML = 'Gửi lại sau '+t_count+' s'
+                button_send_otp_transfer.innerHTML = 'Gửi lại sau ' + t_count + ' s'
             }
 
-        },1000)
+        }, 1000)
         setTimeout(() => {
             button_send_otp_transfer.disabled = false
         }, 60000)
@@ -74,4 +74,25 @@ function sendOTP(sessionID) {
     });
 }
 
+// BUY CARD
+function buyCard(type) {
+    document.getElementById("selectedCard").innerHTML = type;
+    document.getElementById("showCard").style.display = "block";
+
+}
+
+function calculateCardPrice() {
+    var slcard = document.getElementById("slcard").value;
+    var numberCard = document.getElementById("card-quantity").value;
+    if (slcard === "1") {
+        document.getElementById("totalPriceCard").innerHTML = 10000 * parseInt(numberCard);
+    } else if (slcard === "2") {
+        document.getElementById("totalPriceCard").innerHTML = 20000 * parseInt(numberCard);
+    } else if (slcard === "3") {
+        document.getElementById("totalPriceCard").innerHTML = 50000 * parseInt(numberCard);
+    }
+    else if (slcard === "4") {
+        document.getElementById("totalPriceCard").innerHTML = 100000 * parseInt(numberCard);
+    }
+}
 
