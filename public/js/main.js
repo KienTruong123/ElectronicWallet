@@ -49,9 +49,21 @@ window.addEventListener("load", () => {
     button_send_otp_transfer.addEventListener("click", e => {
         e.preventDefault()
         button_send_otp_transfer.disabled = true
+        let t_count = 60
+
+        let timer = setInterval(() => {
+            if(t_count ==0){
+                clearInterval(timer)
+                button_send_otp_transfer.innerHTML = 'Gửi mã OTP'
+            }
+            else{
+                t_count--;
+                button_send_otp_transfer.innerHTML = 'Gửi lại sau '+t_count+' s'
+            }
+
+        },1000)
         setTimeout(() => {
             button_send_otp_transfer.disabled = false
-            alert('btn clicked')
         }, 60000)
     })
 })
