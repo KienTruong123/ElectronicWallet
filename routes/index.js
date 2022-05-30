@@ -45,14 +45,14 @@ router.post('/login', function (req, res, next) {
 
   a_user.findOne({phone: uid})
     .then(result => {
-      console.log(result)
+      //console.log(result)
       if (!result || result.length === 0) {
         req.session.flash = { type: 'danger', message: 'Sai tài khoản hoặc mật khẩu.' }
         return res.redirect('/login')
       }
       else {
         const match = bcrypt.compareSync(pass, result.password)
-        console.log(match)
+        //console.log(match)
         if (match) {
           req.session.user_id = uid
           return res.redirect('/')
@@ -74,13 +74,21 @@ router.post('/login', function (req, res, next) {
 
 
 router.get('/register', function (req, res, next) {
-  console.log(req.session.id)
-  sendmail.validateRegister("xxx@mail");
-  res.render('user/register', { title: 'Register', layout: "login" });
+  if (req.session.user_id) {
+    res.redirect('/')
+  }
+  else {
+    res.render('user/register', { title: 'Register', layout: "login" });
+  }
+
+
+  //sendmail.validateRegister("xxx@mail");
 });
 
+//TODO: /REGISTER POST
+
 router.get('/card',(req,res)=>{
-  console.log(random.makeCard("11111",5))
+  //console.log(random.makeCard("11111",5))
   res.render('user/register')
 })
 

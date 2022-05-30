@@ -4,7 +4,8 @@ const Schema = mongoose.Schema
 const MobileCardSchema = new Schema({
     host: String,
     code: String,
-    price: Number
+    price: Number,
+    status: Boolean
 })
 
 module.exports = new mongoose.model('MobileCard',MobileCardSchema);

@@ -9,4 +9,4 @@ const CreditCardSchema = new Schema({
     balance: Number
 })
 
-module.exports = new mongoose.model('CreditCard',CreditCardSchema);
+module.exports = mongoose.model('CreditCard',CreditCardSchema);

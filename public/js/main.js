@@ -63,6 +63,29 @@ window.addEventListener("load", () => {
             button_send_otp_transfer.disabled = false
         }, 60000)
     })
+
+
+    //DEPOSIT
+
+    let u_deposit_btn = document.querySelector("#u-deposit-btn")
+    u_deposit_btn.addEventListener("submit",(e)=>{
+        e.preventDefault()
+        $.post(
+            "/users/deposit",
+            {
+                deposit_card_id : document.querySelector('#deposit_card_id').value,
+                deposit_card_date : document.querySelector('#deposit_card_date').value,
+                deposit_card_cvv : document.querySelector('#deposit_card_cvv').value,
+                deposit_money : document.querySelector('#deposit_money').value
+
+            },
+            (status)=>{
+                alert("Status: "+status)
+            }
+        )
+    }) 
+
+
 })
 
 
