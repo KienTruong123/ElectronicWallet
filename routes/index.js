@@ -8,8 +8,12 @@ const card = require('../model/mobileCardModel')
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  console.log(req.session.user)
-  res.render('index', { title: 'Express' , user: req.session.user});
+  if(req.session.user_id){
+    res.render('index', { title: 'KTM',user: req.session.user });
+  }
+  else{
+    return res.redirect('/login')
+  }
 });
 
 router.get('/login', function (req, res, next) {
@@ -24,10 +28,10 @@ router.get('/login', function (req, res, next) {
 router.get('/logout', function (req, res, next) {
   if(req.session.user_id){
     req.session.destroy();
-    res.redirect('/login');
+    return res.redirect('/login');
   }
   else{
-    res.redirect('/')
+    return res.redirect('/')
   }
 })
 
