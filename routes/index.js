@@ -7,7 +7,12 @@ const a_user = require('../model/userModel')
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Express' });
+  if(req.session.user_id){
+    res.render('index', { title: 'Express' });
+  }
+  else{
+    return res.redirect('/login')
+  }
 });
 
 router.get('/login', function (req, res, next) {
@@ -22,10 +27,10 @@ router.get('/login', function (req, res, next) {
 router.get('/logout', function (req, res, next) {
   if(req.session.user_id){
     req.session.destroy();
-    res.redirect('/login');
+    return res.redirect('/login');
   }
   else{
-    res.redirect('/')
+    return res.redirect('/')
   }
 })
 
