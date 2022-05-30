@@ -12,7 +12,6 @@ var flash = require('connect-flash');
 var session = require('express-session');
 var mongoose = require('mongoose')
 
-
 var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

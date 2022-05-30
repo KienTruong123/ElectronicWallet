@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var sendmail = require('../libs/sendmail');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -11,6 +12,7 @@ router.get('/login', function(req, res, next) {
 });
 
 router.get('/register', function(req, res, next) {
+  sendmail.validateRegister("xxx@mail");
   res.render('user/register', { title: 'Express' });
 });
 
