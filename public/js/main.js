@@ -51,7 +51,6 @@ window.addEventListener("load", () => {
         button_send_otp_transfer.disabled = true
         setTimeout(() => {
             button_send_otp_transfer.disabled = false
-            alert('btn clicked')
         }, 60000)
     })
 })
