@@ -67,6 +67,7 @@ switch (app.get('env')) {
 //route setup
 app.use(function (req, res, next) {
   res.locals.flash = req.session.flash
+  res.locals.req = req;
   delete req.session.flash
   next()
 })
@@ -79,7 +80,7 @@ app.use('/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  res.render('error')
 });
 
 // error handler

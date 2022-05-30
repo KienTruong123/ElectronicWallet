@@ -4,7 +4,7 @@
 
 
 <section class="vh-100" style="background-color: #f4f5f7;">
-    <a href="/admin"><button class="btn btn-primary " style="font-size: 3vh;">Quay lại</button></a>
+    <a href="/admin"><button class="btn btn-primary " style="font-size: 3vh;left: 1vw;top: 1vw">Quay lại</button></a>
         <div style="display: sticky!important; right: 1vw!important">
             <div class="d-flex justify-content-end flex-c" >
     <div id="toastDialog" class="toast toast-container hide"  data-autohide="true" data-delay="6000">
@@ -30,50 +30,55 @@
               style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
               <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
                 alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
-              <h6 class="text-dark">Sender</h6>
-              <h5 id="name">{{sender_name}}</h5>
-              <p class="px-2">{{sender_id}}</p>
+              <h6 class="text-dark">Bên gửi</h6>
+              <h5 id="name">{{trade.sender_name}}</h5>
+              <p class="px-2">{{trade.sender_id}}</p>
             </div>
             <div class="col-md-8">
               <div class="card-body p-4">
-                <h6>Sender Information</h6>
+                <h6>Thông tin bên gửi</h6>
                 <hr class="mt-0 mb-4">
                 <div class="row pt-1">
                   <div class="col-6 mb-3">
                     <h6>Email</h6>
-                    <p class="text-muted">{{sender_email}}</p>
+                    <p class="text-muted">{{trade.sender_email}}</p>
                   </div>
                   <div class="col-6 mb-3">
-                    <h6>Current Balance</h6>
-                    <p class="text-muted">{{sender_balance}}</p>
+                    <h6>Số dư hiện tại</h6>
+                    <p class="text-muted">{{trade.sender_balance}}</p>
                   </div>
                 </div>
-                <h6>Receiver Information</h6>
+                <h6>Thông tin bên nhận</h6>
                 <hr class="mt-0 mb-4">
                 <div class="row pt-1">
                   <div class="col-6 mb-3">
                     <h6>Email</h6>
-                    <p class="text-muted">{{receiver_email}}</p>
+                    <p class="text-muted">{{trade.receiver_email}}</p>
                   </div>
                   <div class="col-6 mb-3">
-                    <h6>Current Balance</h6>
-                    <p class="text-muted">{{receiver_balance}}</p>
+                    <h6>Số dư hiện tại</h6>
+                    <p class="text-muted">{{trade.receiver_balance}}</p>
                   </div>
                 </div>
-                <h6><i class="fa-solid fa-money-check"></i> Trade Information</h6>
+                <h6><i class="fa-solid fa-money-check"></i> Thông tin giao dịch</h6>
                 <hr class="mt-0 mb-4">
+                
                 <div class="row pt-1">
                   <div class="col-4 mb-3">
-                    <h6>Amount</h6>
-                    <p class="text-muted">{{amounts}}</p>
+                    <h6>Số lượng </h6>
+                    <p class="text-muted">{{trade.amounts}}</p>
                   </div>
                   <div class="col-4 mb-3">
-                    <h6>Sent At</h6>
-                    <p class="text-muted">{{sentAt}}</p>
+                    <h6>Gửi vào</h6>
+                    <p class="text-muted">{{trade.sentAt}}</p>
                   </div>
                   <div class="col-4 mb-3">
-                    <h6>Status</h6>
-                    <p class="text-muted">{{status}}</p>
+                    <h6>Trạng thái</h6>
+                    <p class="text-muted">{{trade.status}}</p>
+                  </div>
+                  <div class="col-6 mb-3">
+                    <h6>Mô tả</h6>
+                    <p class="text-muted">{{trade.description}}</p>
                   </div>
                 </div>
                 <div class="d-flex justify-content-end">
@@ -86,9 +91,9 @@
               style="border-top-right-radius: .5rem; border-bottom-right-radius: .5rem;">
               <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp"
                 alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
-                <h6 class="text-dark">Receiver</h6>
-                <h5 id="name">{{receiver_name}}</h5>
-                <p class="px-2">{{receiver_id}}</p>
+                <h6 class="text-dark">Bên nhận</h6>
+                <h5 id="name">{{trade.receiver_name}}</h5>
+                <p class="px-2">{{trade.receiver_id}}</p>
 
             </div>
           </div>
@@ -114,7 +119,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger confirm-delete-btn" onclick="adminUpdateTrade('{{id}}','Reject')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-danger confirm-delete-btn" onclick="adminUpdateTrade('{{trade.id}}','Reject')" data-bs-dismiss="modal">Tiếp tục</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>
@@ -136,7 +141,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success confirm-accept-btn" onclick="adminUpdateTrade('{{id}}','Approve')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-success confirm-accept-btn" onclick="adminUpdateTrade('{{trade.id}}','Approve')" data-bs-dismiss="modal">Tiếp tục</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>

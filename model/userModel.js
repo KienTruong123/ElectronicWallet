@@ -8,7 +8,10 @@ const UserSchema = new Schema({
         unique: true
     },
     password: String,
-    phone: String,
+    phone: {
+        type: String,
+        unique: true
+    },
     birth: String,
     address: String,
     balance: Number,

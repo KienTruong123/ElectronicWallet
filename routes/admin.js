@@ -11,7 +11,14 @@ moment.locale('vi');
 
 /* GET users listing. */
 // middleware này dùng để test
+
+router.use(function (req, res, next) {
+  req.flash('admin',true)
+  next()
+})
+
 router.get('/', async function(req, res, next) {
+  req.flash('admin',true)
 
 //   User({
 //     name: 'Ductrong 1',
@@ -82,12 +89,12 @@ router.get('/', async function(req, res, next) {
     trade_list[i].createdAt = moment(lock_list[i].createdAt).format('L') +' '+ moment(trade_list[i].createdAt).format('LTS');  
   }
 
-  res.render('admin/admin_dashboard',{active_list,waiting_list,ban_list,lock_list,trade_list});
+  res.render('admin/admin_dashboard',{active_list,waiting_list,ban_list,lock_list,trade_list,admin: true});
 });
 
 router.get('/users/:id', async (req,res)=>{
 
-  let user = User.findOne({_id: req.params.id})
+  let user = User.findOne({_id: req.params.id}).lean()
   .then((result)=>{
     if(!result)
       {
@@ -97,7 +104,7 @@ router.get('/users/:id', async (req,res)=>{
       }
       else{
         let user = result
-        res.render('admin/admin_edit_user',user)
+        res.render('admin/admin_edit_user',{user: user,admin: true})
       }
   })
   .catch(err=>{
@@ -221,7 +228,15 @@ router.get('/trades/:id',async (req,res)=>{
         
       }
       else{
-        let trade = result
+        // avoid pointer usage so that we use loop
+
+        let trade = {}
+        for (var x in result) 
+          trade[x] = result[x];
+         
+
+        
+
         let sender =  await User.find({_id: result.sender_id}).lean()
         let receiver = await User.find({_id: result.receiver_id}).lean()
         trade.sender_name = sender[0].name != undefined ? sender[0].name : "Unknown"
@@ -232,10 +247,11 @@ router.get('/trades/:id',async (req,res)=>{
         trade.receiver_email = receiver[0].email != undefined ? receiver[0].email : "Unknown"
         trade.createdAt = moment(trade.createdAt).format('L') +' '+ moment(trade.createdAt).format('LTS');
         trade.sentAt = moment(trade.createdAt).format('L') +' '+ moment(trade.createdAt).format('LTS');
-        // conver to VND format 
+        //conver to VND format 
         trade.amounts =  trade.amount.toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
-
-        res.render('admin/admin_edit_trade',trade)
+        
+        console.log(trade)
+        res.render('admin/admin_edit_trade',{trade: trade,admin: true})
       }
   })
   .catch(err=>{
