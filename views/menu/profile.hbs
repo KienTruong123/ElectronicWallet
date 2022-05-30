@@ -1,10 +1,10 @@
 <div class="card" id="d-id-profile">
     <div class="row g-0">
         <div class="col-md-4 gradient-custom text-center text-primary">
-            <img width="100" src="https://scontent.fsgn13-2.fna.fbcdn.net/v/t1.6435-1/53202193_2265097137076346_1016337146547535872_n.jpg?stp=dst-jpg_s480x480&_nc_cat=108&ccb=1-7&_nc_sid=7206a8&_nc_ohc=0m6OlJHDB6cAX-HSCVZ&_nc_ht=scontent.fsgn13-2.fna&oh=00_AT8TX2nFfzHkXXq0INzG7JbqbYSXf5jFlzkL2KPO2yBG1g&oe=62BA6FE6" alt="Avatar"
+            <img width="100" src="https://i.pravatar.cc/150?u={{user.id}}" alt="Avatar"
                 class="img-fluid my-5 rounded-circle" alt="Cinque Terre" />
-            <h5 id="name">{{name}}Kien Truong</h5>
-            <p>{{id}}519H0183</p>
+            <h5 id="name">{{user.name}}</h5>
+            <p></p>
             <i class="far fa-edit mb-5"></i>
         </div>
         <div class="col-md-8">
@@ -14,11 +14,11 @@
                 <div class="row ps-3">
                     <div class="col-6 mb-3">
                         <h6>Địa chỉ Email</h6>
-                        <p class="text-muted">kien@gmail.com</p>
+                        <p class="text-muted" >{{user.email}}</p>
                     </div>
                     <div class="col-6 mb-3">
                         <h6>Số điện thoại</h6>
-                        <p class="text-muted">0909090901</p>
+                        <p class="text-muted" >{{user.phone}}</p>
                     </div>
                 </div>
                 <h6>Thông tin cá nhân</h6>
@@ -26,11 +26,11 @@
                 <div class="row ps-3">
                     <div class="col-6 mb-3">
                         <h6>Ngày sinh</h6>
-                        <p class="text-muted">1/1/1000</p>
+                        <p class="text-muted" >{{user.birth}}</p>
                     </div>
                     <div class="col-6 mb-3">
                         <h6>Địa chỉ</h6>
-                        <p class="text-muted">TDTU </p>
+                        <p class="text-muted">{{user.address}} </p>
                     </div>
                 </div>
             </div>

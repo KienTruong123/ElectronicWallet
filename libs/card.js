@@ -8,3 +8,7 @@ module.exports.buyCard = function (net,length,characters) {
     }
     return net+result;
 }
+
+module.exports.cardType= {"11111": "Viettel", "22222": "Mobifone", "33333": "Vinaphone",
+                        "Viettel":"11111","Mobifone":"22222","Vinaphone":"33333"
+}

@@ -1,15 +1,6 @@
 
 
 $('#slQuantity').hide();
-$('#slcard').change(function () {
-    opt = $(this).val();
-    if (!(opt == "0")) {
-        $('#slQuantity').show();
-    } else {
-        $('#slQuantity').hide();
-    }
-});
-
 //----- USER WITHDRAW / DEPOSIT
 window.addEventListener("load", () => {
     let u_withdraw = document.querySelector("#money")
@@ -78,7 +69,6 @@ function sendOTP(sessionID) {
 function buyCard(type) {
     document.getElementById("selectedCard").innerHTML = type;
     document.getElementById("showCard").style.display = "block";
-
 }
 
 function calculateCardPrice() {
@@ -95,4 +85,21 @@ function calculateCardPrice() {
         document.getElementById("totalPriceCard").innerHTML = 100000 * parseInt(numberCard);
     }
 }
+
+// AJAX buy card
+
+function btnBuyCard() {
+    $.post("/trades/card",
+        {
+            type: document.getElementById("selectedCard").innerHTML,
+            quantity: document.getElementById("card-quantity").value,
+            value: document.getElementById("slcard").value
+        },
+        function (data, status) {
+            document.getElementById("showCard").style.display = "none";
+            alert("Giao dịch thành công. Vui lòng vào lịch sử để xem chi tiết");
+        });
+
+};
+
 

@@ -88,3 +88,12 @@ a:active {
 #showCard{
     display: none;
 }
+
+#showCard > div{
+    min-width: 350px;
+    width: 350px;
+}
+
+#multiCollapseCard > div{
+    min-width: 750px;
+}
