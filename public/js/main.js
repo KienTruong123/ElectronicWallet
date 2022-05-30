@@ -1,7 +1,4 @@
-//
-$('#multiCollapseCards').collapse({
-    toggle: false
-  })
+
 
 $('#slQuantity').hide();
 $('#slcard').change(function () {

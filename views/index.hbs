@@ -58,6 +58,7 @@
                                 <i class="fa-regular fa-clock-rotate-left"></i>
                                 <br>Lịch sử giao dịch
                             </label>
+                            
                         </div>
                         {{!-- END DATA SOURCE COLLAPSE --}}
                     </div>
@@ -68,16 +69,24 @@
                         {{!-- DATA SOURCE COLLAPSE PAGE2 --}}
                         <div class="col-8 m-2">
                             <input type="radio" class="btn-check btn-card" name="btnradio" id="btnradio7"
-                                autocomplete="off" data-bs-toggle="collapse" data-bs-target="#multiCollapsePassword">
+                                autocomplete="off" data-bs-toggle="collapse"
+                                data-bs-target="#multiCollapseInformation">
                             <label class="btn btn-outline-success btn-card" for="btnradio7">
+                                <i class="fa-solid fa-id-badge"></i>
+                                <br>Thông tin cá nhân
+                            </label>
+
+                            <input type="radio" class="btn-check btn-card" name="btnradio" id="btnradio8"
+                                autocomplete="off" data-bs-toggle="collapse" data-bs-target="#multiCollapsePassword">
+                            <label class="btn btn-outline-success btn-card" for="btnradio8">
                                 <i class="fa-solid fa-arrow-down-up-lock"></i>
                                 <br>Đổi mật khẩu
                             </label>
 
-                            <input type="radio" class="btn-check btn-card" name="btnradio" id="btnradio8"
+                            <input type="radio" class="btn-check btn-card" name="btnradio" id="btnradio9"
                                 autocomplete="off" data-bs-toggle="collapse"
                                 data-bs-target="#multiCollapseIdentifyCard">
-                            <label class="btn btn-outline-success btn-card" for="btnradio8">
+                            <label class="btn btn-outline-success btn-card" for="btnradio9">
                                 <i class="fa-regular fa-id-card pb-2"></i>
                                 <br>CMND
                             </label>
@@ -142,6 +151,14 @@
             <div class="collapse multi-collapse" id="multiCollapseTransHistory" data-bs-parent="#menu">
                 <div class="card card-body">
                     {{>trans-history}}
+                </div>
+            </div>
+        </div>
+        {{!-- INFORMATION --}}
+         <div class="row">
+            <div class="collapse multi-collapse" id="multiCollapseInformation" data-bs-parent="#menu">
+                <div class="card card-body">
+                     {{>profile}}
                 </div>
             </div>
         </div>
