@@ -26,6 +26,8 @@ router.post('/login', function (req, res, next) {
   //let hashpass = bcrypt.hashSync(pass, 5)
   //console.log(hashpass)
 
+  //TODO: CHECK USER FIRST LOGIN
+
   a_user.findOne({phone: uid})
     .then(result => {
       console.log(result)
