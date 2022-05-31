@@ -455,7 +455,7 @@ router.post('/uploadInformationRegister',cmndUpload, async(req,res)=>{
     }).save()
 
     //send email:
-    let link = sendmail.validateRegister(req.session.user_id,"ductrong1313@gmail.com")
+    let link = await sendmail.validateRegister(req.session.user_id, req.body.email)
     //redirect to login or first login
     return res.json({valid: true,message: "Mã SMS đã gửi đến email của bạn. Dùng sms code để đăng nhập xác thực , mã sẽ hết trong vòng 90s\n(Link Demo:"+link+")"})
   }
