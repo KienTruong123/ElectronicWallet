@@ -86,7 +86,7 @@ router.post('/deposit', async function (req, res, next) {
           )
 
           const insertMany = await Trade.insertMany({
-            sender_id: req.session.user_id,
+            sender_id: req.session.user_oid,
             receiver_id: card_id,
             type: 'Deposit',
             //mobile_card:[{card_id: ""}],
@@ -162,7 +162,7 @@ router.post('/withdraw', async function (req, res, next) {
               { $inc: { balance: -amount*1.05 } }
             )
             const insertMany2 = await Trade.insertMany({
-              sender_id: req.session.user_id,
+              sender_id: req.session.user_oid,
               receiver_id: card_id,
               type: 'Withdraw',
               //mobile_card:[{card_id: ""}],
@@ -180,14 +180,14 @@ router.post('/withdraw', async function (req, res, next) {
           }
           else {
             const insertMany3 = await Trade.insertMany({
-              sender_id: req.session.user_id,
+              sender_id: req.session.user_oid,
               receiver_id: card_id,
               type: 'Withdraw',
               //mobile_card:[{card_id: ""}],
               createdAt: new Date().getTime(),
               status: 'Waiting',
               amount: amount,
-              description: 'Rút tiền từ ví ' + req.session.user_id,
+              description: 'Rút tiền từ ví ' + req.session.user_oid,
               payer: 'sender'
             });
             var x4 = insertMany3
@@ -247,8 +247,8 @@ router.post('/transfer', async function (req, res, next) {
           else {
             if (t_reveiver_money >= 5000000) {
               const trade5m = await Trade.insertMany({
-                sender_id: req.session.user_id,
-                receiver_id: t_reveiver_phone,
+                sender_id: req.session.user_oid,
+                receiver_id: result._id,
                 mobile_card: [],
                 type: 'Transfer',
                 createdAt: new Date().getTime(),
@@ -277,7 +277,7 @@ router.post('/transfer', async function (req, res, next) {
                     { $inc: { balance: t_reveiver_money } }
                   )
                   const trade105 = await Trade.insertMany({
-                    sender_id: req.session.user_id,
+                    sender_id: req.session.user_oid,
                     receiver_id: t_reveiver_phone,
                     mobile_card: [],
                     type: 'Transfer',
@@ -313,7 +313,7 @@ router.post('/transfer', async function (req, res, next) {
                     { $inc: { balance: t_reveiver_money * 0.95 } }
                   )
                   const trade095 = await Trade.insertMany({
-                    sender_id: req.session.user_id,
+                    sender_id: req.session.user_oid,
                     receiver_id: t_reveiver_phone,
                     mobile_card: [],
                     type: 'Transfer',

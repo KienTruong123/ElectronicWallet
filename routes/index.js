@@ -5,18 +5,19 @@ var random = require('../libs/random');
 const bcrypt = require('bcrypt')
 const a_user = require('../model/userModel')
 const card = require('../model/mobileCardModel')
-const trade = require('../model/tradeModel')
+const trade = require('../model/tradeModel');
+const res = require('express/lib/response');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'KTM', user: req.session.user });
+  //res.render('index', { title: 'KTM', user: req.session.user });
 
-  // if(req.session.user_id){
-  //   res.render('index', { title: 'KTM',user: req.session.user });
-  // }
-  // else{
-  //   return res.redirect('/login')
-  // }
+  if (req.session.user_id) {
+    res.render('index', { title: 'KTM', user: req.session.user });
+  }
+  else {
+    return res.redirect('/login')
+  }
 });
 
 router.get('/login', function (req, res, next) {
@@ -29,6 +30,7 @@ router.get('/login', function (req, res, next) {
 });
 
 router.get('/logout', function (req, res, next) {
+  console.log(req.session.user_id)
   if (req.session.user_id) {
     req.session.destroy();
     return res.redirect('/login');
@@ -45,25 +47,58 @@ router.post('/login', function (req, res, next) {
   //let hashpass = bcrypt.hashSync(pass, 5)
   //TODO: CHECK USER FIRST LOGIN
 
+  if (uid == 'admin' && pass == '123456') {
+    req.session.user_id = 'admin'
+    return res.redirect('/admin')
+  }
+
   a_user.findOne({ phone: uid })
-    .then(result => {
+    .then(async result => {
       if (!result || result.length === 0) {
         req.session.flash = { type: 'danger', message: 'Sai tài khoản hoặc mật khẩu.' }
         return res.redirect('/login');
       }
       else {
-        console.log(pass)
-        console.log(result.password)
+        if (result.secure_status == 6) {
+          req.session.flash = { type: 'danger', message: 'Tài khoản của bạn bị Khóa vĩnh viễn' }
+          return res.redirect('/login')
+        }
+        else if (result.secure_status > 2 && (new Date().getTime() - result.lockedAt < 1000 * 60)) {
+          req.session.flash = { type: 'danger', message: 'Tài khoản của bạn bị tạm khóa 1 phút' }
+          return res.redirect('/login')
+        }
+        //console.log(pass)
+        //console.log(result.password)
         const match = bcrypt.compareSync(pass, result.password)
         //console.log(match)
         if (match) {
           req.session.user_id = uid
+          req.session.user_oid = result._id
           req.session.user = result
-          return res.redirect('/')
+          await a_user.updateOne({ phone: result.phone }, { secure_status: 0, lockedAt: null })
+
+          if (result.firstLogin == true) {
+            return res.redirect('/firstlogin')
+          }
+          else {
+            return res.redirect('/')
+          }
         }
         else {
           //console.log('12')
-          req.session.flash = { type: 'danger', message: 'Sai tài khoản hoặc mật khẩu' }
+          await a_user.updateOne({ phone: result.phone }, { $inc: { secure_status: 1 } })
+          //console.log('12')
+          if (result.secure_status <= 1) {
+            req.session.flash = { type: 'danger', message: 'Sai tài khoản hoặc mật khẩu' }
+          }
+          else if (result.secure_status <= 4) {
+            await a_user.updateOne({ phone: result.phone }, { lockedAt: new Date().getTime() })
+            req.session.flash = { type: 'danger', message: 'Tài khoản của bạn bị tạm khóa 1 phút' }
+          }
+          else {
+            await a_user.updateOne({ phone: result.phone }, { lockedAt: new Date().getTime() })
+            req.session.flash = { type: 'danger', message: 'Tài khoản của bạn bị Khóa vĩnh viễn' }
+          }
           return res.redirect('/login')
         }
       }
