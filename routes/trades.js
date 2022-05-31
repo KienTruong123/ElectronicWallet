@@ -49,7 +49,7 @@ router.post('/card', async (req, res) => {
     res.send(JSON.stringify({ err: true, message: "Giao dịch thất bại, không còn thẻ loại này trong hệ thống!" }));
     return;
   }
-
+  console.log(req.session.user)
   var insertMany = await trade.insertMany({sender_id : req.session.user_id,receiver_id:rcid, mobile_card: results, type: "CardPay", amount: 0, createdAt: new Date().getTime(), status:"Successed" });
   res.send(JSON.stringify(insertMany));
 });

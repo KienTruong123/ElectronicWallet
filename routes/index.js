@@ -5,8 +5,6 @@ var random = require('../libs/random');
 const bcrypt = require('bcrypt')
 const a_user = require('../model/userModel')
 const card = require('../model/mobileCardModel')
-const trade = require('../model/tradeModel');
-const res = require('express/lib/response');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -156,25 +154,9 @@ router.get('/card', (req, res) => {
 
 })
 
-// router.get('/test', (req, res) => {
-//   (async function () {
-//     const insertMany = await trade.updateMany({
-//       $or: [{
-//         sender_id: null
-//       }, {
-//         receiver_id: null
-//       }]
-//     }, [{
-//       $set: {
-//         name: { $ifNull: ["$hobby", "$$REMOVE"] },
-//         cat_id: { $ifNull: ["$Roll_no", "$$REMOVE"] }
-//       }
-//     }]
-//     );;
-//     res.setHeader('Content-Type', 'application/json');
-//     res.send(JSON.stringify(insertMany));
-//   })();
-// })
+router.get('/test', (req, res) => {
+  sendmail.validateRegister(req.session.user_id,"truongdinh@mail.com");
+})
 
 
 module.exports = router;

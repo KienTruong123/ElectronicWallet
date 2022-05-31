@@ -197,7 +197,6 @@ function calculateCardPrice() {
 }
 
 // AJAX buy card
-
 function btnBuyCard() {
     $.post("/trades/card",
         {
@@ -225,7 +224,6 @@ function cleanBuyCard() {
 }
 
 // AJAX CHANGE PASSWORD
-
 $("#formChangePass").submit(function (e) {
     e.preventDefault();
     var form = $(this);
@@ -365,7 +363,7 @@ function viewHistory(id){
                                                                 <p>Số tiền giao dịch:</p>
                                                             </div>
                                                             <div class="col">
-                                                            ${data.amount}
+                                                            ${(data.amount * 1).toLocaleString() + " Đ"}
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -377,6 +375,5 @@ function viewHistory(id){
                                                             </div>
                                                         </div>`
 
-    
 }
 
