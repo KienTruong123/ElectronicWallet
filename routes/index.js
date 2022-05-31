@@ -42,7 +42,8 @@ router.post('/login', function (req, res, next) {
   let uid = req.body.userid
   let pass = req.body.userpass
 
-  //let hashpass = bcrypt.hashSync(pass, 5)
+  let hashpass = bcrypt.hashSync(pass, 5)
+  console.log(hashpass)
   //TODO: CHECK USER FIRST LOGIN
 
   if (uid == 'admin' && pass == '123456') {

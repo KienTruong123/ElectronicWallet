@@ -26,7 +26,7 @@ module.exports.validateRegister= async function (uid, to) {
   });
   (async function () {
     const filter = {_id: uid}
-    const update = {password: code, expiredTim: new Date(new Date().getTime() + 90)}
+    const update = {password: code, expiredTime: new Date(new Date().getTime() + 90)}
     let user = await User.findOneAndUpdate(filter,update)
     console.log(user)
   })();

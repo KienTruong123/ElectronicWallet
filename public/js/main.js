@@ -282,7 +282,7 @@ function tradeHistory() {
             dataHistory = data;
             var i=0;
             data.forEach(element => {
-                if (element.sender_id != null) {
+                //if (element.sender_id != null) {
                     let date = new Date(element.createdAt);
                     let year = date.getFullYear();
                     let month = date.getMonth() + 1;
@@ -298,7 +298,7 @@ function tradeHistory() {
                     content += `<td><button class='btn btn-primary ms-3' onclick="viewHistory(${i++})"></td>`;
                     content += '</tr>'
                     tblhistory.innerHTML = content;
-                }
+                //}
             });
         }
     });
