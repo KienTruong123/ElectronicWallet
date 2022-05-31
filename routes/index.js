@@ -79,9 +79,36 @@ router.get('/register', function (req, res, next) {
   res.render('user/register', { title: 'Register', layout: "login" });
 });
 
-router.get('/card',(req,res)=>{
-  console.log(random.makeCard("11111",5))
-  res.render('user/register')
+
+
+router.get('/card', (req, res) => {
+  const cards = []
+  for (let index = 0; index < 20; index++) {
+    cards.push({ code: random.makeCard("11111", 5), price: 10000 })
+    cards.push({ code: random.makeCard("11111", 5), price: 20000 })
+    cards.push({ code: random.makeCard("11111", 5), price: 50000 })
+    cards.push({ code: random.makeCard("11111", 5), price: 100000 })
+  }
+  for (let index = 0; index < 20; index++) {
+    cards.push({ code: random.makeCard("22222", 5), price: 10000 })
+    cards.push({ code: random.makeCard("22222", 5), price: 20000 })
+    cards.push({ code: random.makeCard("22222", 5), price: 50000 })
+    cards.push({ code: random.makeCard("22222", 5), price: 100000 })
+  }
+  for (let index = 0; index < 20; index++) {
+    cards.push({ code: random.makeCard("33333", 5), price: 10000 })
+    cards.push({ code: random.makeCard("33333", 5), price: 20000 })
+    cards.push({ code: random.makeCard("33333", 5), price: 50000 })
+    cards.push({ code: random.makeCard("33333", 5), price: 100000 })
+  }
+
+  (async function () {
+    const insertMany = await card.insertMany(cards);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(insertMany));
+  })();
+
 })
+
 
 module.exports = router;

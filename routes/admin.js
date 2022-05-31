@@ -18,11 +18,14 @@ moment.locale('vi');
 router.use(function (req, res, next) {
   req.flash('admin',true)
   next()
+  if(req.session.user_id != 'admin'){
+    return res.redirect('/login')
+  }
 })
 
 
 router.get('/', async function(req, res, next) {
-  req.flash('admin',true)
+  //req.flash('admin',true)
 
 //   User({
 //     name: 'a',
@@ -112,20 +115,27 @@ router.get('/', async function(req, res, next) {
   // because deposit higher than 5.000.000 VND is allow 
   let trade_list = await Trade.find({amount: {$gt: 5000000},type :{$in : restrictType}}).sort({createdAt: 'desc'}).lean()
 
+
+  console.log("1")
   for(var i=0;i<active_list.length;i++){
     active_list[i].createdAt =moment(active_list[i].createdAt).format('L') +' '+ moment(active_list[i].createdAt).format('LTS');
   }
-  for(var i=0;i<waiting_list.length;i++){
+  console.log("2")
+  for(var i=0;i<waiting_list.length;i++){ 
     waiting_list[i].createdAt =moment(waiting_list[i].createdAt).format('L') +' '+ moment(waiting_list[i].createdAt).format('LTS');  
   }
+  console.log("3")
   for(var i=0;i<ban_list.length;i++){
     ban_list[i].createdAt =moment(ban_list[i].createdAt).format('L') +' '+ moment(ban_list[i].createdAt).format('LTS');  
   }
+  console.log("4")
   for(var i=0;i<lock_list.length;i++){
     lock_list[i].lockedAt =moment(lock_list[i].lockedAt).format('L') +' '+ moment(lock_list[i].lockedAt).format('LTS');  
   }
+  console.log("5")
   for(var i=0;i<trade_list.length;i++){
 
+    console.log("6")
     if(type=="Withdraw"){
       let sender =  await User.find({_id: trade_list[i].sender_id}).lean()
       //let receiver = await CreditCard.find({_id: trade_list[i].receiver_id}).lean()
@@ -144,6 +154,7 @@ router.get('/', async function(req, res, next) {
     trade_list[i].sender_name = sender[0].name
     trade_list[i].receiver_name = receiver[0].name
     // conver to VND format 
+ 
     trade_list[i].amount = trade_list[i].amount.toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
     trade_list[i].createdAt = moment(lock_list[i].createdAt).format('L') +' '+ moment(trade_list[i].createdAt).format('LTS');  
   }

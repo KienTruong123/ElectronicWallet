@@ -6,21 +6,22 @@
                  width="300" height="250"></div>
         <div class="col-4 p-4   " id="d-id-card">
             <!-- TODO: ADD ACTION URL -->
-            <form action="" method="post">
+
                 <div class=" d-flex justify-content-center pb-5">
                     <h3 class="text-success">Cập nhật thông tin CMND</h3>
                 </div>
                 
                 <div class="mb-2">
                     <label for="id-card-front" class="form-label">CMND mặt trước</label>
-                    <input class="form-control form-control-sm" id="id-card-front" type="file">
+                    <input class="form-control form-control-sm" id="id-card-front" type="file" single>
                 </div>
                 <div class="mb-2">
                     <label for="id-card-back" class="form-label">CMND mặt sau</label>
-                    <input class="form-control form-control-sm" id="id-card-back" type="file">
+                    <input class="form-control form-control-sm" id="id-card-back" type="file" single>
                 </div>
-                <button type="submit" class="btn btn-success u-btn-submit">Submit</button>
-            </form>
-        </div>        
+                <button type="submit" onclick="sendCMND(event)" class="btn btn-success u-btn-submit">Submit</button>
+                <h4 class="p-3" id="cmnd-error"></h4>
+
+        </div>
     </div>
 </div>

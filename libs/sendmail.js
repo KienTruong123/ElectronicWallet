@@ -1,5 +1,6 @@
 
 const nodemailer = require("nodemailer");
+const random = require("./random")
 
 module.exports.validateRegister= async function (to) {
   let testAccount = await nodemailer.createTestAccount();

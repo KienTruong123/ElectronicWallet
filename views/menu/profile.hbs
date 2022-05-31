@@ -1,0 +1,39 @@
+<div class="card" id="d-id-profile">
+    <div class="row g-0">
+        <div class="col-md-4 gradient-custom text-center text-primary">
+            <img width="100" src="https://i.pravatar.cc/150?u={{user.id}}" alt="Avatar"
+                class="img-fluid my-5 rounded-circle" alt="Cinque Terre" />
+            <h5 id="name">{{user.name}}</h5>
+            <p></p>
+            <i class="far fa-edit mb-5"></i>
+        </div>
+        <div class="col-md-8">
+            <div class="card-body p-4 m-1">
+                <h6>Thông tin liên lạc</h6>
+                <hr class="mt-0 mb-4">
+                <div class="row ps-3">
+                    <div class="col-6 mb-3">
+                        <h6>Địa chỉ Email</h6>
+                        <p class="text-muted" >{{user.email}}</p>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>Số điện thoại</h6>
+                        <p class="text-muted" >{{user.phone}}</p>
+                    </div>
+                </div>
+                <h6>Thông tin cá nhân</h6>
+                <hr class="mt-0 mb-4">
+                <div class="row ps-3">
+                    <div class="col-6 mb-3">
+                        <h6>Ngày sinh</h6>
+                        <p class="text-muted" >{{user.birth}}</p>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>Địa chỉ</h6>
+                        <p class="text-muted">{{user.address}} </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

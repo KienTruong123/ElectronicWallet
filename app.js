@@ -33,9 +33,6 @@ app.engine( 'hbs', hbs.engine( {
   ifGreater: function(arg1,arg2,options){
     return (arg1 > arg2) ? options.fn(this) : options.inverse(this);
   },
-  convertImage: function(arg1,convertFunction,options){
-    return convertFunction(arg1)
-  }
 },
 } ) );
 

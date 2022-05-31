@@ -268,50 +268,82 @@ function toBase64(buffer) {
     return window.btoa(binary);
   }
 
-async function sendCMND(e){
-    let user_id = e.target.getAttribute('tag')
-    let file1 =document.getElementById('image1')
-    let file2 = document.getElementById('image2')
-
-    image1 = await convert2Buffer(file1.files[0])
-    image2 = await convert2Buffer(file2.files[0])
+async function sendInformationRegister(e){
+    var data = new FormData();
+    let phone = $('#user_phone').val()
+    let email = $('#user_email').val()
+    let name = $('#user_name').val()
+    let bdate = $('#user_bdate').val()
+    let address = $('#user_bdate').val()
+    console.log($('#user_cmnd1'))
+    console.log($('#user_cmnd2'))
+    let image1 = $('#user_cmnd1').prop('files')[0]
+    let image2 = $('#user_cmnd2').prop('files')[0]
     console.log(image1)
     console.log(image2)
+    data.set('image1',image1)
+    data.set('image2',image2)
+    data.set('phone',phone)
+    data.set('email',email)
+    data.set('name',name)
+    data.set('bdate',bdate)
+    data.set('address',address)
 
-    //prepare data
-    let form = new FormData();
-    form.set('image1',image1)
-    form.set('image2',image2)
-    form.set('user_id',user_id)
-    let xhr = new XMLHttpRequest();
-    
+    console.log(phone)
+    console.log(data)
 
-    //send to server
-    xhr.open('POST',window.location.href,true)
-    xhr.addEventListener('load',e=>{
-        console.log("loading")
-        if(xhr.readyState === 4 && xhr.status === 200){
-            //const json = JSON.parse(xhr.responseText)
-            console.log(xhr.responseText)
-            if(xhr.responseText)
-                {
-
-                    console.log('success'+'Upload')
-                }
-            else
-                console.log('danger'+'Upload')                  
+    $.ajax({
+        url: 'users/uploadInformationRegister',
+        data: data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        method: 'POST',
+        type: 'POST', // For jQuery < 1.9
+        success: function(data){
+           if(data.valid){
+                $('#register_error').removeClass('alert-danger').addClass('alert-success').html(data.message)
+           }
+           else{
+            $('#register_error').removeClass('alert-success').addClass('alert-danger').html(data.message)
+           }
+        },
+        error:function(error){
+            alert('Error: ',"Something went wrong :(")
+            console.log(error)
         }
-        else{
-            console.log(xhr.status)
-            console.log('danger'+'Upload'+xhr.statusText)
-        }
-    })
-    let progress_bar = document.getElementById('progress-bar')
-    xhr.upload.addEventListener('progress',e=>{
-        
-    })
+    });
+ }
+
+async function sendCMND(e){
+    var data = new FormData();
+    let image1 = $('#id-card-front').prop('files')[0]
+    let image2 = $('#id-card-back').prop('files')[0]
+    data.set('image1',image1)
+    data.set('image2',image2)
     
-    xhr.send(form); 
+    $.ajax({
+        url: 'users/uploadCMND',
+        data: data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        method: 'POST',
+        type: 'POST', // For jQuery < 1.9
+        success: function(data){
+            let error = $('#cmnd-error')
+           if(data.valid){
+                $('#cmnd-error').removeClass('text-danger').addClass('text-success').html(data.message)
+           }
+           else{
+            $('#cmnd-error').removeClass('text-success').addClass('text-danger').html(data.message)
+           }
+        },
+        error:function(error){
+            alert('Error: ',"Something went wrong :(")
+            toast('danger','Update Fail','Something went wrong.')
+        }
+    });
 }
 
 
