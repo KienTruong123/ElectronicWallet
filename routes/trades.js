@@ -23,15 +23,15 @@ router.post('/card', async (req, res) => {
   var rcid;
   switch (type) {
     case "Viettel":
-      rcid="Viettel";
+      rcid = "Viettel";
       update = await card.findOneAndUpdate({ code: { $regex: /^11111/i }, status: false, price: val }, { host: req.session.user_id, status: true });
       break;
     case "Mobifone":
-      rcid="Mobifone";
+      rcid = "Mobifone";
       update = await card.findOneAndUpdate({ code: { $regex: /^22222/i }, status: false, price: val }, { host: req.session.user_id, status: true });
       break;
     case "Vinaphone":
-      rcid="Vinaphone";
+      rcid = "Vinaphone";
       update = await card.findOneAndUpdate({ code: { $regex: /^33333/i }, status: false, price: val }, { host: req.session.user_id, status: true });
       break;
     default:
@@ -50,7 +50,12 @@ router.post('/card', async (req, res) => {
     return;
   }
   console.log(req.session.user)
-  var insertMany = await trade.insertMany({sender_id : req.session.user_id,receiver_id:rcid, mobile_card: results, type: "CardPay", amount: 0, createdAt: new Date().getTime(), status:"Successed" });
+  var insertMany = await trade.insertMany({
+    sender_id: req.session.user._id, receiver_id: rcid,
+    mobile_card: results, type: "CardPay", amount: 0,
+    createdAt: new Date().getTime(), status: "Successed", 
+    description: "Thẻ cào: " + rcid
+  });
   res.send(JSON.stringify(insertMany));
 });
 
@@ -58,9 +63,9 @@ router.post('/history', async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   var historyTrades = await trade.find({
     "$or": [{
-      receiver_id: req.session.user_id
+      receiver_id: req.session.user._id
     }, {
-      sender_id: req.session.user_id
+      sender_id: req.session.user._id
     }]
   }).sort({ createdAt: 'desc' });
   console.log(historyTrades)

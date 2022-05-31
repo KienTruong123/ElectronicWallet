@@ -198,6 +198,7 @@ function calculateCardPrice() {
 
 // AJAX buy card
 function btnBuyCard() {
+    console.log(document.getElementById("slcard").value)
     $.post("/trades/card",
         {
             type: document.getElementById("selectedCard").innerHTML,
@@ -252,7 +253,7 @@ var dictTypeTran= {
                     "Withdraw": {"icon":"https://cdn-icons.flaticon.com/png/128/2769/premium/2769253.png?token=exp=1653990557~hmac=0c0cf38d3d8687bed08c8a3b46c2803d", "type": "Rút tiền"},
                     "Deposit": {"icon":"https://cdn-icons-png.flaticon.com/128/2721/2721121.png", "type": "Nạp tiền"},
                     "Transfer": {"icon":"https://cdn-icons-png.flaticon.com/128/3029/3029373.png", "type": "Chuyển tiền"},
-                    "CardPay": {"icon":"https://cdn-icons.flaticon.com/png/128/3080/premium/3080541.png?token=exp=1653991171~hmac=d22503edae50a8d17b18cedd795fda17", "type": "Mua thẻ cào"},
+                    "CardPay": {"icon":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAHX1HEiFdZ6QJQn3IPsox9WH8xT20xiaAvQiNyUZTmcN8MCI6oSWhGIsrzIs0XosR5MU&usqp=CAU", "type": "Mua thẻ cào"},
                 }
 var dictStatus={
                     "Approve":"Chấp nhận",
@@ -313,6 +314,7 @@ function viewHistory(id){
     var data=dataHistory[id];
     var mathe=''
     if(data.type==="CardPay"){
+        console.log("sks")
         for (let index = 0; index < data.mobile_card.length; index++) {
             var element = data.mobile_card[index];
             mathe+= element;
@@ -334,14 +336,7 @@ function viewHistory(id){
                                                             ${data.receiver_id}
                                                             </div>
                                                         </div>
-                                                        <div class="row">
-                                                            <div class="col-4">
-                                                                <p>Mã thẻ: </p>
-                                                            </div>
-                                                            <div class="col">
-                                                            ${data.sender_id}
-                                                            </div>
-                                                        </div>
+                                                        ${mathe}
                                                         <div class="row">
                                                             <div class="col-4">
                                                                 <p>Ngày giao dịch:</p>

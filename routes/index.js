@@ -118,8 +118,6 @@ router.get('/register', function (req, res, next) {
   else {
     res.render('user/register', { title: 'Register', layout: "login" });
   }
-
-
   //sendmail.validateRegister("xxx@mail");
 });
 
