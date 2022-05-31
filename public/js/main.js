@@ -19,19 +19,23 @@ window.addEventListener("load", () => {
     let u_menu_fee_withdraw = document.querySelector("#u-menu-fee-withdraw")
     let u_menu_total = document.querySelector("#u-menu-total")
 
-    u_withdraw.addEventListener("change", () => {
-        u_menu_fee_withdraw.innerHTML = parseFloat((u_withdraw.value * 0.05).toFixed(0)).toLocaleString() + "đ";
-        u_menu_total.innerHTML = parseFloat((u_withdraw.value * 1.05).toFixed(0)).toLocaleString() + "đ";
-    });
+    if(u_withdraw){
+        u_withdraw.addEventListener("change", () => {
+            u_menu_fee_withdraw.innerHTML = parseFloat((u_withdraw.value * 0.05).toFixed(0)).toLocaleString() + "đ";
+            u_menu_total.innerHTML = parseFloat((u_withdraw.value * 1.05).toFixed(0)).toLocaleString() + "đ";
+        });
+    }
 
 
     //--- DEPOSIT PAGE
     let u_deposit_money = document.querySelector("#deposit_money")
     let u_deposit_total = document.querySelector("#u-deposit-total")
 
-    u_deposit_money.addEventListener("change", () => {
-        u_deposit_total.innerHTML = (u_deposit_money.value * 1).toLocaleString() + "đ";
-    })
+    if(u_deposit_money && u_deposit_total){
+        u_deposit_money.addEventListener("change", () => {
+            u_deposit_total.innerHTML = (u_deposit_money.value * 1).toLocaleString() + "đ";
+        })
+    }
 
     //--- TRANSFER PAGE
     let t_reveiver_money = document.querySelector("#t_reveiver_money")
@@ -39,33 +43,55 @@ window.addEventListener("load", () => {
     let t_reveiver_total = document.querySelector("#t_reveiver_total")
     //let u_deposit_money = document.querySelector("#deposit_money")
 
-    t_reveiver_money.addEventListener("change", () => {
-        t_reveiver_fee_withdraw.innerHTML = parseFloat((t_reveiver_money.value * 0.05).toFixed(0)).toLocaleString() + "đ";
-        t_reveiver_total.innerHTML = parseFloat((t_reveiver_money.value * 1.05).toFixed(0)).toLocaleString() + "đ";
-    });
+    if(t_reveiver_money && t_reveiver_fee_withdraw && t_reveiver_total){
+        t_reveiver_money.addEventListener("change", () => {
+            t_reveiver_fee_withdraw.innerHTML = parseFloat((t_reveiver_money.value * 0.05).toFixed(0)).toLocaleString() + "đ";
+            t_reveiver_total.innerHTML = parseFloat((t_reveiver_money.value * 1.05).toFixed(0)).toLocaleString() + "đ";
+        });
+    }
 
     let button_send_otp_transfer = document.querySelector("#button_send_otp_transfer")
 
-    button_send_otp_transfer.addEventListener("click", e => {
-        e.preventDefault()
-        button_send_otp_transfer.disabled = true
-        let t_count = 60
+    if(button_send_otp_transfer){
+        button_send_otp_transfer.addEventListener("click", e => {
+            e.preventDefault()
+            button_send_otp_transfer.disabled = true
+            let t_count = 60
+    
+            let timer = setInterval(() => {
+                if(t_count ==0){
+                    clearInterval(timer)
+                    button_send_otp_transfer.innerHTML = 'Gửi mã OTP'
+                }
+                else{
+                    t_count--;
+                    button_send_otp_transfer.innerHTML = 'Gửi lại sau '+t_count+' s'
+                }
+    
+            },1000)
+            setTimeout(() => {
+                button_send_otp_transfer.disabled = false
+            }, 60000)
+        })
+    }
 
-        let timer = setInterval(() => {
-            if(t_count ==0){
-                clearInterval(timer)
-                button_send_otp_transfer.innerHTML = 'Gửi mã OTP'
-            }
-            else{
-                t_count--;
-                button_send_otp_transfer.innerHTML = 'Gửi lại sau '+t_count+' s'
-            }
+    // add event to convert image from buffer to base64
+    let cmnd1 = document.getElementById('cmnd1')
+    let cmnd2 = document.getElementById('cmnd2')
+    
+    // if(cmnd1 && cmnd2 ){
+    //     image1_base64 = toBase64(cmnd1.getAttribute('src'))
+    //     image2_base64 = toBase64(cmnd2.getAttribute('src'))
 
-        },1000)
-        setTimeout(() => {
-            button_send_otp_transfer.disabled = false
-        }, 60000)
-    })
+    //     console.log(cmnd1.getAttribute('src'))
+    //     console.log("-----")
+    //     console.log(cmnd1.src)
+        
+    //     console.log("image 1 base64")
+    //     console.log(image1_base64)
+    //     cmnd1.setAttribute('src',"data:image/png;base64,"+image1_base64)
+    //     cmnd2.setAttribute('src',"data:image/png;base64,"+image2_base64)
+    // }
 })
 
 
@@ -211,3 +237,85 @@ function toast(type,title,body){
 }
 
 // END OF TRONG/ JS
+
+
+// function handle images
+
+
+
+async function convert2Buffer(blob){
+    return new Promise((resolve) => {
+        const reader = new FileReader()
+        reader.onload = () => {
+            console.log(reader.result)
+            resolve(reader.result)
+        }
+        reader.readAsArrayBuffer(blob)
+    })
+}
+
+function toBase64(buffer) {
+    console.log("buffer data")
+    console.log(buffer.data)
+    var binary = '';
+    var bytes = new Uint8Array(buffer.data);
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    console.log("window btoa")
+    console.log(window.btoa(binary))
+    return window.btoa(binary);
+  }
+
+async function sendCMND(e){
+    let user_id = e.target.getAttribute('tag')
+    let file1 =document.getElementById('image1')
+    let file2 = document.getElementById('image2')
+
+    image1 = await convert2Buffer(file1.files[0])
+    image2 = await convert2Buffer(file2.files[0])
+    console.log(image1)
+    console.log(image2)
+
+    //prepare data
+    let form = new FormData();
+    form.set('image1',image1)
+    form.set('image2',image2)
+    form.set('user_id',user_id)
+    let xhr = new XMLHttpRequest();
+    
+
+    //send to server
+    xhr.open('POST',window.location.href,true)
+    xhr.addEventListener('load',e=>{
+        console.log("loading")
+        if(xhr.readyState === 4 && xhr.status === 200){
+            //const json = JSON.parse(xhr.responseText)
+            console.log(xhr.responseText)
+            if(xhr.responseText)
+                {
+
+                    console.log('success'+'Upload')
+                }
+            else
+                console.log('danger'+'Upload')                  
+        }
+        else{
+            console.log(xhr.status)
+            console.log('danger'+'Upload'+xhr.statusText)
+        }
+    })
+    let progress_bar = document.getElementById('progress-bar')
+    xhr.upload.addEventListener('progress',e=>{
+        
+    })
+    
+    xhr.send(form); 
+}
+
+
+
+
+
+// end of func handle images

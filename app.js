@@ -32,6 +32,9 @@ app.engine( 'hbs', hbs.engine( {
   },
   ifGreater: function(arg1,arg2,options){
     return (arg1 > arg2) ? options.fn(this) : options.inverse(this);
+  },
+  convertImage: function(arg1,convertFunction,options){
+    return convertFunction(arg1)
   }
 },
 } ) );
@@ -48,6 +51,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(require('cookie-parser')(credentials.cookieSecret));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'uploads')));
 
 
 //database setup

@@ -46,7 +46,7 @@
               <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
                 alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
               <h5 id="name">{{user.name}}</h5>
-              <p class="px-2">{{user.id}}</p>
+              <p class="px-2">{{user._id}}</p>
               {{#ifEquals user.status "Active"}}
                     <h4 class="text-success">Đã xác thực</h4>
               {{else}}
@@ -106,6 +106,29 @@
           </div>
         </div>
       </div>
+      <div class="col col-lg-4 mb-4 mb-lg-0">
+          <div class="row g-0 pb-2">
+              <h4 style="text-align: center;">Ảnh CMND</h4>
+          </div>
+            {{#if user.image1}}
+                    <div class="row g-0">
+                        <img id="cmnd1" src="/{{user.email}}/{{user.image1}}">
+                    </div>
+            {{else}}
+               <div class="row g-0 text-muted" style="text-align: center;color: gray">
+                    <h4>Chưa có ảnh</h4>
+                </div>
+            {{/if}}
+            {{#if user.image2}}
+                <div class="row g-0">
+                    <img id="cmnd2" src="/{{user.email}}/{{user.image2}}">
+                </div>
+            {{else}}
+                <div class="row g-0 text-muted" style="text-align: center;color: gray">
+                    <h4>Chưa có ảnh</h4>
+                </div>
+            {{/if}}
+      </div>
     </div>
     
     <h4>Các giao dịch trong 1 tháng gần đây</h4>
@@ -156,7 +179,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger confirm-delete-btn" onclick="adminUpdateUser('{{user.id}}','inactive')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-danger confirm-delete-btn" onclick="adminUpdateUser('{{user._id}}','inactive')" data-bs-dismiss="modal">Tiếp tục</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>
@@ -178,7 +201,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success confirm-accept-btn" onclick="adminUpdateUser('{{user.id}}','active')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-success confirm-accept-btn" onclick="adminUpdateUser('{{user._id}}','active')" data-bs-dismiss="modal">Tiếp tục</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
@@ -200,7 +223,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success confirm-request-btn" onclick="adminUpdateUser('{{user.id}}','request')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-success confirm-request-btn" onclick="adminUpdateUser('{{user._id}}','request')" data-bs-dismiss="modal">Tiếp tục</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
@@ -222,7 +245,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success confirm-unlock-btn" onclick="adminUpdateUser('{{user.id}}','unlock')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-success confirm-unlock-btn" onclick="adminUpdateUser('{{user._id}}','unlock')" data-bs-dismiss="modal">Tiếp tục</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>
@@ -245,7 +268,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success confirm-recover-btn" onclick="adminUpdateUser('{{user.id}}','recover')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-success confirm-recover-btn" onclick="adminUpdateUser('{{user._id}}','recover')" data-bs-dismiss="modal">Tiếp tục</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 </div>
             </div>

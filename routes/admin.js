@@ -5,8 +5,11 @@ const { type } = require('express/lib/response');
 var router = express.Router();
 var User = require('../model/userModel')
 var Trade = require('../model/tradeModel')
+var CreditCard = require('../model/creditCardModel')
 const moment = require('moment');
 const res = require('express/lib/response');
+
+
 moment.locale('vi');  
 
 /* GET users listing. */
@@ -17,12 +20,13 @@ router.use(function (req, res, next) {
   next()
 })
 
+
 router.get('/', async function(req, res, next) {
   req.flash('admin',true)
 
 //   User({
-//     name: 'Ductrong 1',
-//     phone: '0901346550',
+//     name: 'a',
+//     phone: '0901346450',
 //     email: 'ductrong23813@gmail.com',
 //     birth: '19/05/2001',
 //     address: 'TP HCM',
@@ -34,7 +38,7 @@ router.get('/', async function(req, res, next) {
 // }).save()
 
 // User({
-//   name: 'Ductrong 2',
+//   name: 'b',
 //   phone: '0901346550',
 //   email: 'ductrong2313@gmail.com',
 //   birth: '19/05/2001',
@@ -47,8 +51,8 @@ router.get('/', async function(req, res, next) {
 // }).save()
 
 // User({
-//   name: 'Ductrong 3',
-//   phone: '0901346550',
+//   name: 'c',
+//   phone: '0901346530',
 //   email: 'ductrong1313@gmail.com',
 //   birth: '19/05/2001',
 //   address: 'TP HCM',
@@ -59,16 +63,57 @@ router.get('/', async function(req, res, next) {
 //   lockedAt: new Date().getTime()
 // }).save()
 
+// User({
+//   name: 'd',
+//   phone: '0911346450',
+//   email: 'ductrong2a3813@gmail.com',
+//   birth: '19/05/2001',
+//   address: 'TP HCM',
+//   balance: 120000,
+//   createdAt: new Date().getTime(),
+//   status: 'Waiting',
+//   secure_status: 0,
+//   lockedAt: new Date().getTime()
+// }).save()
+
+// User({
+// name: 'e',
+// phone: '0601342550',
+// email: 'ductrong23a3@gmail.com',
+// birth: '19/05/2001',
+// address: 'TP HCM',
+// balance: 120000,
+// createdAt: new Date().getTime(),
+// status: 'Ban',
+// secure_status: 0,
+// lockedAt: new Date().getTime()
+// }).save()
+
+// User({
+// name: 'f',
+// phone: '0701346430',
+// email: 'ductrong13a3@gmail.com',
+// birth: '19/05/2001',
+// address: 'TP HCM',
+// balance: 120000,
+// createdAt: new Date().getTime(),
+// status: 'Waiting',
+// secure_status: 6,
+// lockedAt: new Date().getTime()
+// }).save()
+
 
   // get 5 list 
   let active_list = await User.find({"status":"Active"}).sort({createdAt: 'desc'}).lean()
   let waiting_list = await User.find({"status":{$in:["Waiting","Updating"]}}).sort({createdAt: 'desc'}).lean()
   let ban_list = await User.find({"status":"Ban"}).sort({createdAt: 'desc'}).lean()
   let lock_list = await User.find({secure_status: { $gt: 4 }}).sort({lockedAt: 'asc'}).lean()
-  let trade_list = await Trade.find({amount: {$gt: 5000000}}).sort({createdAt: 'desc'}).lean()
+  let restrictType = ["Withdraw","Transfer"]
+  // because deposit higher than 5.000.000 VND is allow 
+  let trade_list = await Trade.find({amount: {$gt: 5000000},type :{$in : restrictType}}).sort({createdAt: 'desc'}).lean()
 
   for(var i=0;i<active_list.length;i++){
-    active_list[i].createdAt =moment(active_list[i].createdAt).format('L') +' '+ moment(active_list[i].createdAt).format('LTS');  
+    active_list[i].createdAt =moment(active_list[i].createdAt).format('L') +' '+ moment(active_list[i].createdAt).format('LTS');
   }
   for(var i=0;i<waiting_list.length;i++){
     waiting_list[i].createdAt =moment(waiting_list[i].createdAt).format('L') +' '+ moment(waiting_list[i].createdAt).format('LTS');  
@@ -80,6 +125,20 @@ router.get('/', async function(req, res, next) {
     lock_list[i].lockedAt =moment(lock_list[i].lockedAt).format('L') +' '+ moment(lock_list[i].lockedAt).format('LTS');  
   }
   for(var i=0;i<trade_list.length;i++){
+
+    if(type=="Withdraw"){
+      let sender =  await User.find({_id: trade_list[i].sender_id}).lean()
+      //let receiver = await CreditCard.find({_id: trade_list[i].receiver_id}).lean()
+      trade_list[i].sender_name = sender[0].name
+      trade_list[i].receiver_name = "Bank"
+    }
+    // type == Transfer
+    else{
+      let sender =  await User.find({_id: trade_list[i].sender_id}).lean()
+      let receiver = await User.find({_id: trade_list[i].receiver_id}).lean()
+      trade_list[i].sender_name = sender[0] != undefined ? sender[0].name : "unknown"
+      trade_list[i].receiver_name = receiver[0] != undefined ? receiver[0].name : "unknown"
+    }
     let sender =  await User.find({_id: trade_list[i].sender_id}).lean()
     let receiver = await User.find({_id: trade_list[i].receiver_id}).lean()
     trade_list[i].sender_name = sender[0].name
@@ -91,6 +150,8 @@ router.get('/', async function(req, res, next) {
 
   res.render('admin/admin_dashboard',{active_list,waiting_list,ban_list,lock_list,trade_list,admin: true});
 });
+
+
 
 router.get('/users/:id', async (req,res)=>{
 
@@ -119,6 +180,8 @@ router.get('/users/:id', async (req,res)=>{
           trade_list[i].sender_name = sender[0] === undefined ? "Unknown" : sender[0].name != undefined ? sender[0].name : "Unknown"
           trade_list[i].receiver_name = receiver[0] === undefined ? "Unknown" : receiver[0].name != undefined ? receiver[0].name : "Unknown"
           trade_list[i].createdAt = moment(trade_list[i].createdAt).format('L') +' '+ moment(trade_list[i].createdAt).format('LTS');
+
+
           //conver to VND format 
           trade_list[i].amount =  trade_list[i].amount.toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
 
@@ -131,7 +194,7 @@ router.get('/users/:id', async (req,res)=>{
   })
   .catch(err=>{
     console.log(err)
-    req.flash('message',"Something went wrong. Can't find user with id: "+req.params.id) 
+    req.flash('message',"Có lỗi xảy ra. Không tìm thấy người dùng với id: "+req.params.id) 
     res.redirect('/admin')
   })
 })
@@ -145,7 +208,7 @@ router.post('/updateUser',async (req,res)=>{
   console.log("Stop here")
   console.log(user)
   if(!user){
-    return res.json({valid: false,message: "Something went wrong. Can't find user with id "+id})
+    return res.json({valid: false,message: "Có lỗi xảy ra. Không tìm thấy người dùng với id: "+id})
   }
   console.log(user.status)
   console.log(user.secure_status)
@@ -160,12 +223,12 @@ router.post('/updateUser',async (req,res)=>{
       User.findOneAndUpdate(filter, update)
       .then(user=>{
         if(user)
-          return res.json({valid: true,message: "User move to active list"})
+          return res.json({valid: true,message: "Người dùng đã được kích hoạt"})
         else
-          return res.json({valid: false,message: "Can't find user with id "+id})
+          return res.json({valid: false,message: "Không tìm thấy người dùng với id: "+id})
       })
       .catch(err=>{
-        return res.json({valid: false,message: "Something went wrong. Can't find user with id "+id})
+        return res.json({valid: false,message: "Có lỗi xảy ra. Không tìm thấy người dùng với id: "+id})
       })
     }
     else if(type == 'inactive'){
@@ -174,12 +237,12 @@ router.post('/updateUser',async (req,res)=>{
       User.findOneAndUpdate(filter, update)
       .then(user=>{
         if(user)
-          return res.json({valid: true,message: "User move to ban list"})
+          return res.json({valid: true,message: "Người dùng đã vị vô hiệu hóa"})
         else
-          return res.json({valid: false,message: "Can't find user with id "+id})
+          return res.json({valid: false,message: "Không tìm thấy người dùng với id: "+id})
       })
       .catch(err=>{
-        return res.json({valid: false,message: "Something went wrong. Can't find user with id "+id})
+        return res.json({valid: false,message: "Có lỗi xảy ra. Không tìm thấy người dùng với id: "+id})
       })
       
     }
@@ -189,12 +252,12 @@ router.post('/updateUser',async (req,res)=>{
       User.findOneAndUpdate(filter, update)
       .then(user=>{
         if(user)
-          return res.json({valid: true,message: "User move to waiting list"})
+          return res.json({valid: true,message: "Người dùng đã đưa vào danh sách đợi cập nhật"})
         else
-          return res.json({valid: false,message: "Can't find user with id "+id})
+          return res.json({valid: false,message: "Không tìm thấy người dùng với id "+id})
       })
       .catch(err=>{
-        return res.json({valid: false,message: "Something went wrong. Can't find user with id "+id})
+        return res.json({valid: false,message: "Có lỗi xảy ra. Không tìm thấy người dùng với id: "+id})
       })
     }
   }
@@ -205,17 +268,18 @@ router.post('/updateUser',async (req,res)=>{
       User.findOneAndUpdate(filter, update)
       .then(user=>{
         if(user)
-          return res.json({valid: true,message: "User move to active list"})
+          return res.json({valid: true,message: "Người dùng được đưa vào danh sách đợi"})
         else
-          return res.json({valid: false,message: "Can't find user with id "+id})
+          return res.json({valid: false,message: "Không tìm thấy người dùng với id: "+id})
       })
       .catch(err=>{
-        return res.json({valid: false,message: "Something went wrong. Can't find user with id "+id})
+        return res.json({valid: false,message: "Có lỗi xảy ra. Không tìm thấy người dùng với id: "+id})
       })
     }
   }
   // secure_status independent with status
-  console.log("go to here")
+  else{
+    console.log("go to here")
   console.log(user.secure_status > 5)
   if(user.secure_status > 5){
     if(type == 'unlock'){
@@ -227,17 +291,18 @@ router.post('/updateUser',async (req,res)=>{
         console.log("User ne")
         console.log(user)
         if(user)
-          return res.json({valid: true,message: "User has been released"})
+          return res.json({valid: true,message: "Người dùng đã được mở khóa"})
         else
-          return res.json({valid: false,message: "Can't find user with id "+id})
+          return res.json({valid: false,message: "Không tìm thấy người dùng với id: "+id})
       })
       .catch(err=>{
-        return res.json({valid: false,message: "Something went wrong. Can't find user with id "+id})
+        return res.json({valid: false,message: "Có lỗi xảy ra. Không tìm thấy người dùng với id: "+id})
       })
     }
   }
-  else{
-    res.json({valid: false,message:"User is "+user.status})
+    else{
+      res.json({valid: false,message:"User is "+user.status})
+    }
   }
 })
 
@@ -248,7 +313,7 @@ router.get('/trades/:id',async (req,res)=>{
     console.log(result)
     if(!result)
       {
-        req.flash('message',"Can't find transaction with id: "+req.params.id) 
+        req.flash('message',"Có lỗi xảy ra. Không tìm thấy giao dịch với id:: "+req.params.id) 
         res.redirect('/admin')
         
       }
@@ -271,8 +336,10 @@ router.get('/trades/:id',async (req,res)=>{
         trade.sender_email = sender[0].email != undefined ? sender[0].email : "Unknown"
         trade.receiver_email = receiver[0].email != undefined ? receiver[0].email : "Unknown"
         trade.createdAt = moment(trade.createdAt).format('L') +' '+ moment(trade.createdAt).format('LTS');
+        //calculate transaction fee
+        trade.fee = (trade.amount * 0.05).toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
         //conver to VND format 
-        trade.amounts =  trade.amount.toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
+        trade.amount =  trade.amount.toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
         
         console.log("trade ne")
         console.log(trade)
@@ -281,7 +348,7 @@ router.get('/trades/:id',async (req,res)=>{
       }
   })
   .catch(err=>{
-    req.flash('message',"Something went wrong. Can't find transaction with id: "+req.params.id) 
+    req.flash('message',"Có lỗi xảy ra. Không tìm thấy giao dịch với id: "+req.params.id) 
     res.redirect('/admin')
   })
 })
@@ -292,14 +359,14 @@ router.post('/updateTrade', async (req,res)=>{
   console.log("type:" +type)
 
   if(type != 'Approve' && type != 'Reject'){
-    return res.json({valid:false,message: 'Transaction only can be approved or rejected.'})
+    return res.json({valid:false,message: 'Giao dịch chỉ có thể được Duyệt hoặc Từ Chối.'})
   }
 
   let trade = await Trade.findOne({_id: id}).exec()
   console.log("Stop here")
   console.log(trade)
   if(!trade){
-    return res.json({valid: false,message: "Something went wrong. Can't find transaction with id "+id})
+    return res.json({valid: false,message: "Có lỗi xảy ra. Không tìm thấy giao dịch với id:"+id})
   }
   console.log(trade.status)
 
@@ -311,13 +378,63 @@ router.post('/updateTrade', async (req,res)=>{
       if(t)
         {
           if(type == 'Approve'){
-            let filter = { _id: t.sender_id };
-            let update = { $inc: {balance: - t.amount} };
-            await User.findOneAndUpdate(filter,update)
 
-            filter = { _id: t.receiver_id };
-            update = { $inc: {balance: + t.amount} };
-            await User.findOneAndUpdate(filter,update)
+            // from wallet to bank
+            if(t.type == 'Withdraw'){
+              let filter = { _id: t.sender_id };
+              let update = { $inc: {balance: - t.amount} };
+              await User.findOneAndUpdate(filter,update)
+  
+              filter = { _id: t.receiver_id };
+              update = { $inc: {balance: + t.amount} };
+              await CreditCard.findOneAndUpdate(filter,update)
+
+              //Update fee transaction to sender:
+              // because as Withdraw , the fee payer is always sender(user)
+              let fee = t.amount * 0.05
+              filter = { _id: t.sender_id };
+              update = { $inc: {balance: - fee} };
+              await User.findOneAndUpdate(filter,update) 
+            }
+
+
+            // // from bank to wallet
+            // else if(t.type == 'Deposit'){
+            //   let filter = { _id: t.sender_id };
+            //   let update = { $inc: {balance: - t.amount} };
+            //   await CreditCard.findOneAndUpdate(filter,update)
+  
+            //   filter = { _id: t.receiver_id };
+            //   update = { $inc: {balance: + t.amount} };
+            //   await User.findOneAndUpdate(filter,update)
+            // }
+
+
+            // between person to person
+            else if(t.type == 'Transfer'){
+              let filter = { _id: t.sender_id };
+              let update = { $inc: {balance: - t.amount} };
+              await User.findOneAndUpdate(filter,update)
+  
+              filter = { _id: t.receiver_id };
+              update = { $inc: {balance: + t.amount} };
+              await User.findOneAndUpdate(filter,update)
+
+              
+            // Update Fee of transaction to person who is fee payer
+              if(t.payer == "receiver"){
+                let fee = t.amount * 0.05
+                let filter = { _id: t.receiver_id };
+                let update = { $inc: {balance: - fee} };
+                await CreditCard.findOneAndUpdate(filter,update)
+              }
+              else{
+                let fee = t.amount * 0.05
+                let filter = { _id: t.sender_id };
+                let update = { $inc: {balance: - fee} };
+                await CreditCard.findOneAndUpdate(filter,update)
+              }
+            }
 
             return res.json({valid: true,message: "Transaction is "+type})
           }
@@ -326,16 +443,42 @@ router.post('/updateTrade', async (req,res)=>{
           }
         }
       else
-        return res.json({valid: false,message: "Can't find transaction with id "+id})
+        return res.json({valid: false,message: "Không tìm thấy người dùng với id: "+id})
     })
     .catch(err=>{
-      return res.json({valid: false,message: "Something went wrong. Can't find transaction with id "+id})
+      return res.json({valid: false,message: "Có lỗi xảy ra. Không tìm thấy giao dịch với id: "+id})
     })
   }
   else{
     return res.json({valid: false,message: "Warning ! The transaction is "+trade.status})
   }
 })
+
+// router.get('/upload',(req,res)=>{
+//   res.render('test',{admin: true})
+// })
+
+// const cmndUpload = uploader.fields([{name: 'image1',maxCount: 1},{name:'image2',maxCount:1}])
+
+// router.post('/upload',cmndUpload, async (req,res)=>{
+
+//   console.log(req.files)
+//   console.log(Buffer.from(req.files['image1']))
+
+//   //console.log(res.write(req.image1,'binary'))
+//   const filter = {_id: req.body.user_id}
+//   const update = {image1: req.files['image1'], image2: req.files['image2']}
+//   await User.findOneAndUpdate(filter,update)
+//   .then(user=>{
+//     if(user)
+//       return res.json({valid: true,message:"Cập nhật CMND thành công "})
+//     else
+//       return res.json({valid: true,message:"Không thể tìm thấy người dùng với id:"+req.body.user_id})
+//   .catch(err=>{
+//     return res.json({valid: true,message:"Có lỗi xảy ra. Không thể cập nhật CMND vào lúc này."})
+//   })
+//   })
+// })
 
 // Trade({
 //   send_id: '62922b2a42eea4507ccb9ff2',

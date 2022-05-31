@@ -65,7 +65,12 @@ app.get('/admin',(req,res)=>{
 })
 
 app.get('/upload',(req,res)=>{
-    res.render('test')
+    res.render('test',{admin: true})
+})
+
+app.use(function (req, res, next) {
+  req.flash('admin',true)
+  next()
 })
 
 app.post('/upload',uploader.fields([{

@@ -21,6 +21,8 @@ const UserSchema = new Schema({
     lockedAt: Date,
     smsCode: String,
     expiredTime: Date,
+    image1: String,
+    image2: String
 })
 
 module.exports = new mongoose.model('a_user',UserSchema);
