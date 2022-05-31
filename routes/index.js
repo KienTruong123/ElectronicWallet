@@ -5,7 +5,7 @@ var random = require('../libs/random');
 const bcrypt = require('bcrypt')
 const a_user = require('../model/userModel')
 const card = require('../model/mobileCardModel')
-const trade = require('../model/tradeModel')
+
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -110,10 +110,11 @@ router.get('/card', (req, res) => {
   }
 
   (async function () {
-    const insertMany = await card.insertMany(cards);
+    var insertMany = await card.insertMany(cards);
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(insertMany));
   })();
+
 
 })
 

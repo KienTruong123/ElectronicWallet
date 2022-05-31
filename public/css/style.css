@@ -61,7 +61,8 @@ a:active {
 #buycard,
 #d-password,
 #d-id-card,
-#d-id-profile {
+#d-id-profile,
+#d-show-info{
     border-radius: 20px 20px;
     background-color: rgb(240, 240, 240);
 }

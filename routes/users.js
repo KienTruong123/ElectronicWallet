@@ -180,12 +180,9 @@ router.post('/withdraw', async function (req, res, next) {
             var x4 = insertMany3
             res.send(JSON.stringify({ color: 'green', status: 'Rút tiền thành cọbg. Giao dịch đanh chờ xác nhận' }))
           }
-
           //console.log(x)
           //res.send(JSON.stringify(x[0]));
-
         }
-
       }
 
     })

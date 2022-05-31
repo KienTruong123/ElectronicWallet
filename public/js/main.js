@@ -1,6 +1,6 @@
 
-
 $('#slQuantity').hide();
+$('#d-show-info').hide();
 //----- USER WITHDRAW / DEPOSIT
 window.addEventListener("load", () => {
     let u_withdraw = document.querySelector("#money2")
@@ -76,23 +76,23 @@ function submit_deposit() {
 
         },
         (data, status) => {
-            if(data[0]==undefined){
-                document.getElementById("12345").innerHTML= data.status
+            if (data[0] == undefined) {
+                document.getElementById("12345").innerHTML = data.status
                 document.getElementById("12345").style.color = data.color
                 document.getElementById("u-deposit-total").innerHTML = "0 đ"
             }
             else
-                document.getElementById("12345").innerHTML=data[0].status
+                document.getElementById("12345").innerHTML = data[0].status
 
-                document.querySelector('#deposit_card_id').value=null;
-                document.querySelector('#deposit_card_date').value=null;
-                document.querySelector('#deposit_card_cvv').value=null;
-                document.querySelector('#deposit_money').value=1 ;
+            document.querySelector('#deposit_card_id').value = null;
+            document.querySelector('#deposit_card_date').value = null;
+            document.querySelector('#deposit_card_cvv').value = null;
+            document.querySelector('#deposit_money').value = 1;
         }
     )
 }
 
-function submit_withdraw(){
+function submit_withdraw() {
     $.post(
         "/users/withdraw",
         {
@@ -105,24 +105,24 @@ function submit_withdraw(){
         (data, status) => {
             //console.log(data)
             //console.log(data.status)
-            if(data[0]==undefined){
-                document.getElementById("w_message2").innerHTML= data.status
+            if (data[0] == undefined) {
+                document.getElementById("w_message2").innerHTML = data.status
                 document.getElementById("w_message2").style.color = data.color
                 document.getElementById("u-menu-fee-withdraw").innerHTML = "0 đ"
                 document.getElementById("u-menu-total2").innerHTML = "0 đ"
             }
-            else{
-                document.getElementById("12345").innerHTML=data[0].status
+            else {
+                document.getElementById("12345").innerHTML = data[0].status
             }
 
 
-                document.querySelector('#card_id2').value=null;
-                document.querySelector('#card_date2').value=null;
-                document.querySelector('#card_cvv2').value=null;
-                document.querySelector('#desc2').value=null ;
-                document.querySelector('#money2').value=1;
-                document.querySelector('#u-menu-total2').innerHTML ='0 đ'
-                document.querySelector('#u-menu-fee-withdraw').innerHTML ='0 đ'
+            document.querySelector('#card_id2').value = null;
+            document.querySelector('#card_date2').value = null;
+            document.querySelector('#card_cvv2').value = null;
+            document.querySelector('#desc2').value = null;
+            document.querySelector('#money2').value = 1;
+            document.querySelector('#u-menu-total2').innerHTML = '0 đ'
+            document.querySelector('#u-menu-fee-withdraw').innerHTML = '0 đ'
         }
     )
 }
@@ -207,28 +207,136 @@ function cleanChangePassword() {
     document.getElementById("re-new-password").value = null;
 }
 
-const tblhistory = document.getElementById('tbl-history');
+var tblhistory = document.getElementById('tbl-history');
+var dataHistory;
+
+var dictTypeTran= {
+                    "Withdraw": {"icon":"https://cdn-icons.flaticon.com/png/128/2769/premium/2769253.png?token=exp=1653990557~hmac=0c0cf38d3d8687bed08c8a3b46c2803d", "type": "Rút tiền"},
+                    "Deposit": {"icon":"https://cdn-icons-png.flaticon.com/128/2721/2721121.png", "type": "Nạp tiền"},
+                    "Transfer": {"icon":"https://cdn-icons-png.flaticon.com/128/3029/3029373.png", "type": "Chuyển tiền"},
+                    "CardPay": {"icon":"https://cdn-icons.flaticon.com/png/128/3080/premium/3080541.png?token=exp=1653991171~hmac=d22503edae50a8d17b18cedd795fda17", "type": "Mua thẻ cào"},
+                }
+var dictStatus={
+                    "Approve":"Chấp nhận",
+                    "Waiting":"Đang chờ",
+                    "Successed":"Thành công",
+                    "Failed":"Thất bại"
+}
 // AJAX TRADE HISTORY
 function tradeHistory() {
 
+    tblhistory.innerHTML = ` <table class="table table-hover border" id="tbl-history">
+                                <thead>
+                                    <tr class="table-success">
+                                        <th>--</th>
+                                        <th>Loại giao dich</th>
+                                        <th>Số tiền</th>
+                                        <th>Thời gian thực hiện</th>
+                                        <th>Trạng thái</th>
+                                        <th>Chi tiết</th>
+                                    </tr>
+                                </thead>
+                            </table>`;
     $.ajax({
         type: "POST",
         url: "/trades/history",
         success: function (data) {
+            dataHistory = data;
+            var i=0;
             data.forEach(element => {
                 if (element.sender_id != null) {
+                    let date = new Date(element.createdAt);
+                    let year = date.getFullYear();
+                    let month = date.getMonth() + 1;
+                    let dt = date.getDate();
                     let content = tblhistory.innerHTML;
+                    let typeT = dictTypeTran[element.type]
                     content += '<tr>'
-                    content += '<td>' + element.sender_id + '</td>';
-                    content += '<td>' + element.type + '</td>';
-                    content += '<td>' +  (element.amount * 1).toLocaleString() + "đ"+ '</td>';
-                    content += '<td>' + element.createdAt + '</td>';
-                    content += '<td>' + element.status + '</td>';
+                    content += `<td> <img width="30" src="${typeT['icon']}" alt="Avatar"  + </td>`;
+                    content += '<td>' + typeT['type'] + '</td>';
+                    content += '<td>' + (element.amount * 1).toLocaleString() + "Đ" + '</td>';
+                    content += `<td>${dt}-${month}-${year} </td>`;
+                    content += '<td>' + dictStatus[element.status] + '</td>';
+                    content += `<td><button class='btn btn-primary ms-3' onclick="viewHistory(${i++})"></td>`;
                     content += '</tr>'
                     tblhistory.innerHTML = content;
                 }
             });
         }
     });
+    $('#d-show-info').hide();
+    $('#tbl-history').show();
+}
+
+function viewHistory(id){
+    $('#d-show-info').show();
+    $('#tbl-history').hide();
+
+    var data=dataHistory[id];
+    var mathe=''
+    if(data.type==="CardPay"){
+        for (let index = 0; index < data.mobile_card.length; index++) {
+            var element = data.mobile_card[index];
+            mathe+= element;
+        } 
+    }
+    document.getElementById("d-show-info").innerHTML=` <div class="row">
+                                                            <div class="col-4">
+                                                                <p>Người gửi:</p>
+                                                            </div>
+                                                            <div class="col">
+                                                            ${data.sender_id}
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <p>Người nhận: </p>
+                                                            </div>
+                                                            <div class="col">
+                                                            ${data.receiver_id}
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <p>Mã thẻ: </p>
+                                                            </div>
+                                                            <div class="col">
+                                                            ${data.sender_id}
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <p>Ngày giao dịch:</p>
+                                                            </div>
+                                                            <div class="col">
+                                                            ${data.createdAt}
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <p>Trạng thái:</p>
+                                                            </div>
+                                                            <div class="col">
+                                                            ${dictStatus[data.status]}
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <p>Số tiền giao dịch:</p>
+                                                            </div>
+                                                            <div class="col">
+                                                            ${data.amount}
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <p>Mô tả: </p>
+                                                            </div>
+                                                            <div class="col">
+                                                            ${data.description}
+                                                            </div>
+                                                        </div>`
+
+    
 }
 

@@ -20,14 +20,18 @@ router.post('/card', async (req, res) => {
   var val = value[req.body.value];
   var type = req.body.type;
   var update;
+  var rcid;
   switch (type) {
     case "Viettel":
+      rcid="Viettel";
       update = await card.findOneAndUpdate({ code: { $regex: /^11111/i }, status: false, price: val }, { host: req.session.user_id, status: true });
       break;
     case "Mobifone":
+      rcid="Mobifone";
       update = await card.findOneAndUpdate({ code: { $regex: /^22222/i }, status: false, price: val }, { host: req.session.user_id, status: true });
       break;
     case "Vinaphone":
+      rcid="Vinaphone";
       update = await card.findOneAndUpdate({ code: { $regex: /^33333/i }, status: false, price: val }, { host: req.session.user_id, status: true });
       break;
     default:
@@ -36,25 +40,31 @@ router.post('/card', async (req, res) => {
   var results = []
   for (let index = 0; index < req.body.quantity; index++) {
     var updateCard = update;
-    if(updateCard!=null)
+    if (updateCard != null)
       results.push(updateCard._id);
   }
 
   res.setHeader('Content-Type', 'application/json');
-  if(results.length==0){
-      res.send(JSON.stringify({err: true , message: "Giao dịch thất bại, không còn thẻ loại này trong hệ thống!" }));
-      return;
-    }
+  if (results.length == 0) {
+    res.send(JSON.stringify({ err: true, message: "Giao dịch thất bại, không còn thẻ loại này trong hệ thống!" }));
+    return;
+  }
 
-  var insertMany = await trade.insertMany({receiver_id: req.session.user_id, mobile_card:results, type: "CardPay" });
-  res.send(JSON.stringify(insertMany)); 
+  var insertMany = await trade.insertMany({sender_id : req.session.user_id,receiver_id:rcid, mobile_card: results, type: "CardPay", amount: 0, createdAt: new Date().getTime(), status:"Successed" });
+  res.send(JSON.stringify(insertMany));
 });
 
 router.post('/history', async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
-  var  historyTrades = await trade.find({ host: req.session.user_id });
+  var historyTrades = await trade.find({
+    "$or": [{
+      receiver_id: req.session.user_id
+    }, {
+      sender_id: req.session.user_id
+    }]
+  }).sort({ createdAt: 'desc' });
   console.log(historyTrades)
-  res.send(JSON.stringify(historyTrades)); 
+  res.send(JSON.stringify(historyTrades));
 })
 
 module.exports = router;
