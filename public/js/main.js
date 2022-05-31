@@ -61,9 +61,49 @@ window.addEventListener("load", () => {
     // let u_deposit_btn = document.querySelector("#u-deposit-btn")
     // u_deposit_btn.addEventListener("submit",(e)=>
 
+    // transfer_fee_type = document.getElementsByName("transfer_fee_person").values
+    // console.log(transfer_fee_type)
+    //console.log(transfer_fee_type)
+    // transfer_fee_type.addEventListener("change",(e)=>{
+    //     console.log(transfer_fee_type.value)
+    // })
 
+    // $(".t_fee_user").change(function () {
+
+    //     var val = $('.t_fee_user:checked').val();
+    // });
 
 })
+
+function transfer_submit(){
+    $.post(
+        "/users/transfer",
+        {
+            t_reveiver_phone: document.querySelector('#t_reveiver_phone').value,
+            t_reveiver_desc: document.querySelector('#t_reveiver_desc').value,
+            t_reveiver_money: document.querySelector('#t_reveiver_money').value,
+            t_reveiver_otp: document.querySelector('#t_reveiver_otp').value,
+            t_fee_user: $('.t_fee_user:checked').val()
+        },
+        (data, state) => {
+            if(data[0]== undefined){
+                document.getElementById("transfer_alert").innerHTML= data.status
+                document.getElementById("transfer_alert").style.color = data.color
+                document.getElementById("t_reveiver_fee_withdraw").innerHTML = "0 đ"
+                document.getElementById("t_reveiver_total").innerHTML = "0 đ"
+            }
+            else{
+                document.getElementById("12345").innerHTML=data[0].status
+            }
+            document.querySelector('#t_reveiver_phone').value=null;
+            document.querySelector('#t_reveiver_desc').value=null;
+            document.querySelector('#t_reveiver_money').value=1;
+            document.querySelector('#t_reveiver_otp').value=null ;
+            document.querySelector('#t_reveiver_fee_withdraw').innerHTML ='0 đ'
+            document.querySelector('#t_reveiver_total').innerHTML ='0 đ'
+        }
+    )
+}
 
 function submit_deposit() {
 

@@ -39,8 +39,8 @@ router.post('/login', function (req, res, next) {
   let uid = req.body.userid
   let pass = req.body.userpass
 
-  // let hashpass = bcrypt.hashSync(pass, 5)
-  // console.log(hashpass)
+  //let hashpass = bcrypt.hashSync(pass, 5)
+  //console.log(hashpass)
 
   //TODO: CHECK USER FIRST LOGIN
 
@@ -49,9 +49,12 @@ router.post('/login', function (req, res, next) {
       //console.log(result)
       if (!result || result.length === 0) {
         req.session.flash = { type: 'danger', message: 'Sai tài khoản hoặc mật khẩu.' }
+        //console.log('1')
         return res.redirect('/login')
       }
       else {
+        console.log(pass)
+        console.log(result.password)
         const match = bcrypt.compareSync(pass, result.password)
         //console.log(match)
         if (match) {
@@ -60,6 +63,7 @@ router.post('/login', function (req, res, next) {
           return res.redirect('/')
         }
         else {
+          //console.log('12')
           req.session.flash = { type: 'danger', message: 'Sai tài khoản hoặc mật khẩu' }
           return res.redirect('/login')
         }
@@ -67,6 +71,7 @@ router.post('/login', function (req, res, next) {
     })
     .catch(err => {
       req.session.flash = { type: 'danger', message: err }
+      //console.log(err)
         return res.redirect('/login')
     })
 
