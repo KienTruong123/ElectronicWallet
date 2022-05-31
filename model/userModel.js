@@ -19,6 +19,7 @@ const UserSchema = new Schema({
     status: String,
     secure_status: Number,
     lockedAt: Date,
+    firstLogin: Boolean
 })
 
 module.exports = mongoose.model('a_user',UserSchema);
