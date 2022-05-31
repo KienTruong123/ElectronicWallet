@@ -12,7 +12,6 @@ window.addEventListener("load", () => {
         u_menu_total.innerHTML = parseFloat((u_withdraw.value * 1.05).toFixed(0)).toLocaleString() + "đ";
     });
 
-
     //--- DEPOSIT PAGE
     let u_deposit_money = document.querySelector("#deposit_money")
     let u_deposit_total = document.querySelector("#u-deposit-total")
@@ -96,10 +95,69 @@ function btnBuyCard() {
             value: document.getElementById("slcard").value
         },
         function (data, status) {
-            document.getElementById("showCard").style.display = "none";
-            alert("Giao dịch thành công. Vui lòng vào lịch sử để xem chi tiết");
-        });
-
+            if (data.err != null) {
+                alert(data.message);
+            } else {
+                document.getElementById("showCard").style.display = "none";
+                alert("Giao dịch thành công. Vui lòng vào lịch sử để xem chi tiết");
+                cleanBuyCard();
+            }
+        })
 };
 
+
+function cleanBuyCard() {
+    document.getElementById("selectedCard").innerHTML = "";
+    document.getElementById("card-quantity").value = 0;
+    document.getElementById("slcard").value = 0;
+    document.getElementById("totalPriceCard").innerHTML = "0";
+}
+
+// AJAX CHANGE PASSWORD
+
+$("#formChangePass").submit(function (e) {
+    e.preventDefault();
+    var form = $(this);
+    var actionUrl = form.attr('action');
+    $.ajax({
+        type: "POST",
+        url: actionUrl,
+        data: form.serialize(),
+        success: function (data) {
+            alert(data.message);
+        }
+    });
+    cleanChangePassword();
+});
+
+function cleanChangePassword() {
+    document.getElementById("old-password").value = null;
+    document.getElementById("new-password").value = null;
+    document.getElementById("re-new-password").value = null;
+}
+
+const tblhistory = document.getElementById('tbl-history');
+// AJAX TRADE HISTORY
+function tradeHistory() {
+
+    $.ajax({
+        type: "POST",
+        url: "/trades/history",
+        success: function (data) {
+            data.forEach(element => {
+                if (element.sender_id != null) {
+                    let content = tblhistory.innerHTML;
+                    content += '<tr>'
+                    content += '<td>' + element.sender_id + '</td>';
+                    content += '<td>' + element.type + '</td>';
+                    content += '<td>' +  (element.amount * 1).toLocaleString() + "đ"+ '</td>';
+                    content += '<td>' + element.createdAt + '</td>';
+                    content += '<td>' + element.status + '</td>';
+                    content += '</tr>'
+                    tblhistory.innerHTML = content;
+                }
+            });
+        }
+    });
+}
 

@@ -14,9 +14,9 @@
                         <div class="col-2"> </div>
                         {{!-- DATA SOURCE COLLAPSE --}}
                         <div class="col-8 m-2 justify-content-center">
-                            <input type="radio" class="btn-check btn-card" name="btnradio" id="btnradio1"
+                            <input type="radio" class="btn-check btn-card collapse" name="btnradio" id="btnradio1"
                                 autocomplete="off" data-bs-toggle="collapse"
-                                data-bs-target="#multiCollapseNotification">
+                                data-bs-target="#multiCollapseNotification" checked>
                             <label class="btn btn-outline-success btn-card " for="btnradio1">
                                 <i class="fa-solid fa-circle-info pb-2"></i>
                                 <br>Thông báo
@@ -24,7 +24,7 @@
 
                             <input type="radio" class="btn-check btn-card" name="btnradio" id="btnradio2"
                                 autocomplete="off" data-bs-toggle="collapse" data-bs-target="#multiCollapseDeposit"
-                                checked>
+                                >
                             <label class="btn btn-outline-success btn-card " for="btnradio2">
                                 <i class="fa-solid fa-money-bill-trend-up pb-2"></i>
                                 <br>Nạp tiền
@@ -108,7 +108,7 @@
         {{!-- DATA TARGET COLLAPSE --}}
         {{!-- NOTIFICATION --}}
         <div class="row">
-            <div class="collapse multi-collapse" id="multiCollapseNotification" data-bs-parent="#menu">
+            <div class="collapse multi-collapse show" id="multiCollapseNotification" data-bs-parent="#menu">
                 <div class="card card-body">
                     {{>notification}}
                 </div>
