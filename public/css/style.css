@@ -98,3 +98,21 @@ a:active {
 #multiCollapseCard > div{
     min-width: 750px;
 }
+
+/*----------------------------------------------------------------*/
+.u-login-gradient-custom {
+    /* fallback for old browsers */
+    background: #71d42f;
+}
+
+.u-login-card-padding {
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.u-login-btn-login {
+    width: 50%;
+}
+#u-login-background-body {
+    background-image: linear-gradient(#037ade, #03e5b7);
+}
