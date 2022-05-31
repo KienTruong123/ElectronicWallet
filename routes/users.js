@@ -24,10 +24,327 @@ router.get('/', function(req, res, next) {
 // })
 
 
+router.post('/changepassword', async (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  var findUser = await user.findOneAndUpdate({ phone: req.session.user_id }, { password: hashpasswordnew });
+  var result = findUser;
+  if (result == null) { 
+    res.send(JSON.stringify({ err: true, message: "Bạn không có quyền truy cập vào hệ thống!" }));
+    return;
+  }
+  var match = bcrypt.compareSync(req.body.password0, req.body.password1)
+  if (match==null) {
+    res.send(JSON.stringify({ err: true, message: "Mật khẩu hiện tại không đúng!" }));
+    return;
+  }
+  var hashpasswordnew = bcrypt.hashSync(req.body.password1, saltRounds);
+  var updateUser = await user.findOneAndUpdate({ phone: req.session.user_id }, { password: hashpasswordnew });
+
+  if (updateUser)
+    res.send(JSON.stringify({ err: false, message: "Đổi mật khẩu thành công!" }));
+  else
+    res.send(JSON.stringify({ err: true, message: "Lỗi hệ thống vui lòng thử lại sau!" }));
+})
+
+router.post('/deposit', async function (req, res, next) {
+  try {
+    //console.log("sss")
+    let card_id = req.body.deposit_card_id
+    let e_date = req.body.deposit_card_date
+    let cvv = req.body.deposit_card_cvv
+    let amount = req.body.deposit_money
+
+    res.setHeader('Content-Type', 'application/json');
+
+    if (amount < 1) {
+      res.send(JSON.stringify({ color: 'red', status: 'Số tiền giao dịch phải lớn hơn 1' }))
+      return;
+    }
+
+    await CreditCard.findOne({
+      sender_id: card_id,
+      expiredDate: Date.parse(e_date),
+      cvv: cvv
+    }).then(async result => {
+      if (!result || result.length == 0) {
+        res.send(JSON.stringify({ color: 'red', status: 'Thông tin thẻ không hợp lệ.' }))
+        return;
+      }
+      else {
+        if (result.limit < amount && result.limit != -1) {
+          res.send(JSON.stringify({ color: 'red', status: 'Nạp vượt quá định mức của thẻ.' }))
+          return;
+        }
+        else if (result.balance < amount) {
+          res.send(JSON.stringify({ color: 'red', status: 'Số dư thẻ không đủ để nạp' }))
+          return;
+        }
+        else {
+          const updateCreditCard = await CreditCard.updateOne(
+            { sender_id: card_id },
+            { $inc: { balance: -amount } }
+          )
+          const update_a_user = await a_user.updateOne(
+            { phone: req.session.user_id },
+            { $inc: { balance: amount } }
+          )
+
+          const insertMany = await Trade.insertMany({
+            sender_id: req.session.user_oid,
+            receiver_id: card_id,
+            type: 'Deposit',
+            //mobile_card:[{card_id: ""}],
+            createdAt: new Date().getTime(),
+            status: 'Approve',
+            amount: amount,
+            description: 'Nạp tiền vào ví ' + req.session.user_id
+          });
+
+          var x1 = updateCreditCard;
+          var x2 = update_a_user;
+          var x3 = insertMany;
+          res.send(JSON.stringify({ color: 'green', status: 'Nạp tiền vào ví thành công' }))
+          //console.log(x)
+          //res.send(JSON.stringify(x[0]));
+
+        }
+
+      }
+
+    })
+  }
+  catch (e) {
+    res.redirect('/')
+  }
 
 
-router.get('/upload',(req,res)=>{
-  res.render('test',{admin: true})
+})
+
+router.post('/withdraw', async function (req, res, next) {
+  try {
+    let card_id = req.body.card_id2
+    let e_date = req.body.card_date2
+    let cvv = req.body.card_cvv2
+    let amount = req.body.money2
+    let desc = req.body.desc2
+
+
+    res.setHeader('Content-Type', 'application/json');
+
+    if (amount < 1) {
+      res.send(JSON.stringify({ color: 'red', status: 'Số tiền giao dịch phải lớn hơn 1' }))
+      return;
+    }
+
+    await CreditCard.findOne({
+      sender_id: card_id,
+      expiredDate: Date.parse(e_date),
+      cvv: cvv
+    }).then(async result => {
+      if (!result || result.length == 0) {
+        res.send(JSON.stringify({ color: 'red', status: 'Thông tin thẻ không hợp lệ.' }))
+        return;
+      }
+      else {
+        if (result.balance < amount * 1.05) {
+          res.send(JSON.stringify({ color: 'red', status: 'Số dư thẻ không đủ để nạp' }))
+          return;
+        }
+        else if ((amount % 50000) != 0) {
+          console.log(result.balance)
+          res.send(JSON.stringify({ color: 'red', status: 'Số tiền rút là bội của 50.000đ' }))
+          return;
+        }
+        else {
+          if (amount < 5000000) {
+            const updateCreditCard = await CreditCard.updateOne(
+              { sender_id: card_id },
+              { $inc: { balance: amount } }
+            )
+            const update_a_user = await a_user.updateOne(
+              { phone: req.session.user_id },
+              { $inc: { balance: -amount*1.05 } }
+            )
+            const insertMany2 = await Trade.insertMany({
+              sender_id: req.session.user_oid,
+              receiver_id: card_id,
+              type: 'Withdraw',
+              //mobile_card:[{card_id: ""}],
+              createdAt: new Date().getTime(),
+              status: 'Approve',
+              amount: amount,
+              description: desc,
+              payer: 'sender'
+            });
+
+            var x1 = updateCreditCard;
+            var x2 = update_a_user;
+            var x3 = insertMany2;
+            res.send(JSON.stringify({ color: 'green', status: 'Rút tiền từ ví thành công' }))
+          }
+          else {
+            const insertMany3 = await Trade.insertMany({
+              sender_id: req.session.user_oid,
+              receiver_id: card_id,
+              type: 'Withdraw',
+              //mobile_card:[{card_id: ""}],
+              createdAt: new Date().getTime(),
+              status: 'Waiting',
+              amount: amount,
+              description: 'Rút tiền từ ví ' + req.session.user_oid,
+              payer: 'sender'
+            });
+            var x4 = insertMany3
+            res.send(JSON.stringify({ color: 'green', status: 'Rút tiền thành công. Giao dịch đang chờ xác nhận' }))
+          }
+          //console.log(x)
+          //res.send(JSON.stringify(x[0]));
+        }
+      }
+
+    })
+  }
+  catch (e) {
+    res.redirect('/')
+  }
+
+})
+
+router.post('/transfer', async function (req, res, next) {
+  try {
+    let t_reveiver_phone = req.body.t_reveiver_phone
+    let t_reveiver_desc = req.body.t_reveiver_desc
+    let t_reveiver_money = req.body.t_reveiver_money
+    let t_reveiver_otp = req.body.t_reveiver_otp
+    let t_fee_user = req.body.t_fee_user
+
+    res.setHeader('Content-Type', 'application/json');
+
+    if (t_reveiver_otp == null) {
+      res.send(JSON.stringify({ color: 'red', status: 'Thiếu mã OTP' }))
+      return;
+    }
+    else if (t_reveiver_money < 1) {
+      res.send(JSON.stringify({ color: 'red', status: 'Số tiền chuyển phải lớn hơn 1' }))
+      return;
+    }
+
+    await a_user.findOne({
+      phone: t_reveiver_phone
+    }).then(result => {
+      if (!result || result.length == 0) {
+        res.send(JSON.stringify({ color: 'red', status: 'Thông tin người nhận không hợp lệ' }))
+        return;
+      }
+      else {
+        a_user.findOne({
+          phone: req.session.user_id
+        }).then(async result2 => {
+          if (!result2 || result2.length == 0) {
+            //console.log(req.session.user_id)
+            res.send(JSON.stringify({ color: 'red', status: 'Phiên giao dịch đã hết hạn, vui lòng đăng nhập lại.' }))
+            return;
+          }
+          else {
+            if (t_reveiver_money >= 5000000) {
+              const trade5m = await Trade.insertMany({
+                sender_id: req.session.user_oid,
+                receiver_id: result._id,
+                mobile_card: [],
+                type: 'Transfer',
+                createdAt: new Date().getTime(),
+                status: 'Waiting',
+                amount: t_reveiver_money,
+                description: t_reveiver_desc,
+                payer: t_fee_user
+              })
+              var x = trade5m
+              res.send(JSON.stringify({ color: 'green', status: 'Đã tạo giao dịch thành công. Chuyển tiền đang chờ xác nhận' }))
+              return
+            }
+            else {
+              if (t_fee_user == 'sender') {
+                if (result2.balance < t_reveiver_money * 1.05) {
+                  res.send(JSON.stringify({ color: 'red', status: 'Số dư không đủ' }))
+                  return
+                }
+                else {
+                  const update_sender = await a_user.updateOne(
+                    { phone: req.session.user_id },
+                    { $inc: { balance: -t_reveiver_money * 1.05 } }
+                  )
+                  const update_receiver = await a_user.updateOne(
+                    { phone: t_reveiver_phone },
+                    { $inc: { balance: t_reveiver_money } }
+                  )
+                  const trade105 = await Trade.insertMany({
+                    sender_id: req.session.user_oid,
+                    receiver_id: t_reveiver_phone,
+                    mobile_card: [],
+                    type: 'Transfer',
+                    createdAt: new Date().getTime(),
+                    status: 'Approve',
+                    amount: t_reveiver_money,
+                    description: t_reveiver_desc,
+                    payer: t_fee_user
+                  })
+
+                  var t1 = update_sender;
+                  var t2 = update_receiver;
+                  var t3 = trade105;
+
+                  res.send(JSON.stringify({ color: 'green', status: 'Giao dịch thành công' }))
+                  return;
+
+                }
+              }
+              //RECEIVER PAYS FEE
+              else {
+                if (result2.balance < t_reveiver_money) {
+                  res.send(JSON.stringify({ color: 'red', status: 'Số dư không đủ' }))
+                  return
+                }
+                else {
+                  const update_sender = await a_user.updateOne(
+                    { phone: req.session.user_id },
+                    { $inc: { balance: -t_reveiver_money } }
+                  )
+                  const update_receiver = await a_user.updateOne(
+                    { phone: t_reveiver_phone },
+                    { $inc: { balance: t_reveiver_money * 0.95 } }
+                  )
+                  const trade095 = await Trade.insertMany({
+                    sender_id: req.session.user_oid,
+                    receiver_id: t_reveiver_phone,
+                    mobile_card: [],
+                    type: 'Transfer',
+                    createdAt: new Date().getTime(),
+                    status: 'Approve',
+                    amount: t_reveiver_money,
+                    description: t_reveiver_desc,
+                    payer: t_fee_user
+                  })
+
+                  var t4 = update_sender;
+                  var t5 = update_receiver;
+                  var t6 = trade095;
+
+                  res.send(JSON.stringify({ color: 'green', status: 'Giao dịch thành công' }))
+                  return;
+                }
+              }
+            }
+          }
+
+        })
+
+      }
+    })
+  }
+  catch (e) {
+    res.redirect('/')
+  }
+
 })
 
 const cmndUpload = uploader.fields([{name: 'image1',maxCount: 1},{name:'image2',maxCount:1}])
@@ -98,12 +415,12 @@ router.post('/uploadInformationRegister',cmndUpload, async(req,res)=>{
   console.log(image2)
 
   let checkPhone = await User.findOne({phone: req.body.phone})
+  let checkEmail = await User.findOne({email: req.body.email})
   if(checkPhone){
-    return res.json({valid: true,message: req.body.phone+" is already existed."})
+    return res.json({valid: false,message: req.body.phone+" is already existed."})
   }
   else if(checkEmail){
-    let checkEmail = await User.findOne({email: req.body.email})
-    return res.json({valid: true,message:req.body.email+" is already existed."})
+    return res.json({valid: false,message:req.body.email+" is already existed."})
   }
   else{
 
@@ -128,7 +445,7 @@ router.post('/uploadInformationRegister',cmndUpload, async(req,res)=>{
 
     // update database
     await User({firstLogin: true,status: 'Waiting',secure_status: 0,name: req.body.name,
-    email: req.body,
+    email: req.body.email,
     phone: req.body.phone,
     address: req.body.address,
     birth: req.body.bdate,
@@ -138,9 +455,9 @@ router.post('/uploadInformationRegister',cmndUpload, async(req,res)=>{
     }).save()
 
     //send email:
-
-
+    let link = sendmail.validateRegister(req.session.user_id,"ductrong1313@gmail.com")
     //redirect to login or first login
+    return res.json({valid: true,message: "Mã SMS đã gửi đến email của bạn. Dùng sms code để đăng nhập xác thực , mã sẽ hết trong vòng 90s\n(Link Demo:"+link+")"})
   }
 })
 

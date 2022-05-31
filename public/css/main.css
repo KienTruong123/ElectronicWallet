@@ -59,14 +59,13 @@ a:active {
     border-radius: 20px 20px;
 }
 
-#buycard{
+#buycard,
+#d-password,
+#d-id-card,
+#d-id-profile,
+#d-show-info{
     border-radius: 20px 20px;
     background-color: rgb(240, 240, 240);
-}
-
-#buycard, #d-password, #d-id-card{
-  border-radius: 20px 20px;
-  background-color: rgb(240, 240, 240);
 }
 
 .u-btn-submit{
@@ -179,3 +178,51 @@ a:active {
   /* end of gradient */
 
   /* End of Trong. Css */
+
+
+  /* fix ui login */
+  /* ---------------------- LOGIN------------ */
+.u-login-gradient-custom {
+  /* fallback for old browsers */
+  background: #71d42f;
+}
+
+.u-login-card-padding {
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.u-login-btn-login {
+  width: 50%;
+}
+
+#showCard{
+  display: none;
+}
+
+#showCard > div{
+  min-width: 350px;
+  width: 350px;
+}
+
+#multiCollapseCard > div{
+  min-width: 750px;
+}
+
+/*----------------------------------------------------------------*/
+.u-login-gradient-custom {
+  /* fallback for old browsers */
+  background: #71d42f;
+}
+
+.u-login-card-padding {
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.u-login-btn-login {
+  width: 50%;
+}
+#u-login-background-body {
+  background-image: linear-gradient(#037ade, #03e5b7);
+}
