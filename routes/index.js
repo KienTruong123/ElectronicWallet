@@ -53,7 +53,7 @@ router.post('/login', function (req, res, next) {
       }
       else {
         const match = bcrypt.compareSync(pass, result.password)
-        console.log(match)
+        //console.log(match)
         if (match) {
           req.session.user_id = uid
           req.session.user = result
@@ -76,9 +76,15 @@ router.post('/login', function (req, res, next) {
 
 
 router.get('/register', function (req, res, next) {
-  console.log(req.session.id)
-  sendmail.validateRegister("xxx@mail");
-  res.render('user/register', { title: 'Register', layout: "login" });
+  if (req.session.user_id) {
+    res.redirect('/')
+  }
+  else {
+    res.render('user/register', { title: 'Register', layout: "login" });
+  }
+
+
+  //sendmail.validateRegister("xxx@mail");
 });
 
 // Generate cards

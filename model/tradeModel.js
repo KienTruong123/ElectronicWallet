@@ -10,7 +10,8 @@ const TradeSchema = new Schema({
     status: String,
     amount: Number,
     description: String,
+    payer: String
 })
 
 
-module.exports = new mongoose.model('Trade',TradeSchema);
+module.exports = mongoose.model('Trade', TradeSchema);
