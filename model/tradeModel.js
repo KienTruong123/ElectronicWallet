@@ -10,6 +10,7 @@ const TradeSchema = new Schema({
     status: String,
     amount: Number,
     description: String,
+    payer: String
 })
 
 

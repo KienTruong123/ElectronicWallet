@@ -3,9 +3,9 @@
 $('#slQuantity').hide();
 //----- USER WITHDRAW / DEPOSIT
 window.addEventListener("load", () => {
-    let u_withdraw = document.querySelector("#money")
+    let u_withdraw = document.querySelector("#money2")
     let u_menu_fee_withdraw = document.querySelector("#u-menu-fee-withdraw")
-    let u_menu_total = document.querySelector("#u-menu-total")
+    let u_menu_total = document.querySelector("#u-menu-total2")
 
     u_withdraw.addEventListener("change", () => {
         u_menu_fee_withdraw.innerHTML = parseFloat((u_withdraw.value * 0.05).toFixed(0)).toLocaleString() + "đ";
@@ -89,6 +89,41 @@ function submit_deposit() {
                 document.querySelector('#deposit_card_date').value=null;
                 document.querySelector('#deposit_card_cvv').value=null;
                 document.querySelector('#deposit_money').value=1 ;
+        }
+    )
+}
+
+function submit_withdraw(){
+    $.post(
+        "/users/withdraw",
+        {
+            card_id2: document.querySelector('#card_id2').value,
+            card_date2: document.querySelector('#card_date2').value,
+            card_cvv2: document.querySelector('#card_cvv2').value,
+            desc2: document.querySelector('#desc2').value,
+            money2: document.querySelector('#money2').value,
+        },
+        (data, status) => {
+            //console.log(data)
+            //console.log(data.status)
+            if(data[0]==undefined){
+                document.getElementById("w_message2").innerHTML= data.status
+                document.getElementById("w_message2").style.color = data.color
+                document.getElementById("u-menu-fee-withdraw").innerHTML = "0 đ"
+                document.getElementById("u-menu-total2").innerHTML = "0 đ"
+            }
+            else{
+                document.getElementById("12345").innerHTML=data[0].status
+            }
+
+
+                document.querySelector('#card_id2').value=null;
+                document.querySelector('#card_date2').value=null;
+                document.querySelector('#card_cvv2').value=null;
+                document.querySelector('#desc2').value=null ;
+                document.querySelector('#money2').value=1;
+                document.querySelector('#u-menu-total2').innerHTML ='0 đ'
+                document.querySelector('#u-menu-fee-withdraw').innerHTML ='0 đ'
         }
     )
 }
