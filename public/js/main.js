@@ -58,27 +58,40 @@ window.addEventListener("load", () => {
 
     //DEPOSIT
 
-    let u_deposit_btn = document.querySelector("#u-deposit-btn")
-    u_deposit_btn.addEventListener("submit",(e)=>{
-        e.preventDefault()
-        $.post(
-            "/users/deposit",
-            {
-                deposit_card_id : document.querySelector('#deposit_card_id').value,
-                deposit_card_date : document.querySelector('#deposit_card_date').value,
-                deposit_card_cvv : document.querySelector('#deposit_card_cvv').value,
-                deposit_money : document.querySelector('#deposit_money').value
+    // let u_deposit_btn = document.querySelector("#u-deposit-btn")
+    // u_deposit_btn.addEventListener("submit",(e)=>
 
-            },
-            (status)=>{
-                alert("Status: "+status)
-            }
-        )
-    }) 
 
 
 })
 
+function submit_deposit() {
+
+    $.post(
+        "/users/deposit",
+        {
+            deposit_card_id: document.querySelector('#deposit_card_id').value,
+            deposit_card_date: document.querySelector('#deposit_card_date').value,
+            deposit_card_cvv: document.querySelector('#deposit_card_cvv').value,
+            deposit_money: document.querySelector('#deposit_money').value
+
+        },
+        (data, status) => {
+            if(data[0]==undefined){
+                document.getElementById("12345").innerHTML= data.status
+                document.getElementById("12345").style.color = data.color
+                document.getElementById("u-deposit-total").innerHTML = "0 đ"
+            }
+            else
+                document.getElementById("12345").innerHTML=data[0].status
+
+                document.querySelector('#deposit_card_id').value=null;
+                document.querySelector('#deposit_card_date').value=null;
+                document.querySelector('#deposit_card_cvv').value=null;
+                document.querySelector('#deposit_money').value=1 ;
+        }
+    )
+}
 
 //TODO: Change URL 
 function sendOTP(sessionID) {
@@ -124,5 +137,7 @@ function btnBuyCard() {
         });
 
 };
+
+
 
 

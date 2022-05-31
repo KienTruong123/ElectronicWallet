@@ -9,68 +9,75 @@ const Trade = require('../model/tradeModel')
 
 /* GET users listing. */
 // middleware này dùng để test
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.send('No access support')
   //res.render('admin_edit_user');
 });
 
-router.get('/:id',(req,res)=>{
+router.get('/:id', (req, res) => {
   res.render('admin_edit_user')
 })
 
-router.post('/deposit', async function (req, res, next){
+router.post('/deposit', async function (req, res, next) {
+  console.log("sss")
   let card_id = req.body.deposit_card_id
   let e_date = req.body.deposit_card_date
   let cvv = req.body.deposit_card_cvv
   let amount = req.body.deposit_money
 
-  //let is_ok = false
-
+  res.setHeader('Content-Type', 'application/json');
   await CreditCard.findOne({
     sender_id: card_id,
     expiredDate: Date.parse(e_date),
     cvv: cvv
-  }).then(result=>{ // <----    result here !!!
-    if(!result || result.length==0){
-      return res.json({status:'Thông tin thẻ không hợp lệ.'})
+  }).then(async result =>  { 
+    if (!result || result.length == 0) {
+       res.send(JSON.stringify({color:'red', status: 'Thông tin thẻ không hợp lệ.' }))
+       return;
     }
-    else{
-     
-      if(result.limit < amount && result.limit!=-1){
-        return res.json({status:'Nạp vượt quá định mức của thẻ'})
+    else {
+      if (result.limit < amount && result.limit != -1) {
+         res.send(JSON.stringify({color:'red', status: 'Nạp vượt quá định mức của thẻ.' }))
+         return;
       }
-      else if(result.balance < amount){
-        return res.json({status:'Số dư thẻ không đủ để nạp'})
+      else if (result.balance < amount) {
+         res.send(JSON.stringify({color:'red', status: 'Số dư thẻ không đủ để nạp' }))
+         return;
       }
-      else{
-        console.log("---1"+result)
-        CreditCard.updateOne(
-          {sender_id: card_id},
-          {$inc: {balance: -amount}}
+      else {
+        const updateCreditCard = await CreditCard.updateOne(
+          { sender_id: card_id },
+          { $inc: { balance: -amount } }
         )
-        console.log("---2"+result)
-        a_user.updateOne(
-          {phone: req.session.user_id},
-          {$inc: {balance: amount}}
+        const update_a_user = await a_user.updateOne(
+          { phone: req.session.user_id },
+          { $inc: { balance: amount } }
         )
-        //error trade ?
-        // console.log("---3"+result)
-        // Trade.insertMany({
-        //   sender_id: req.session.user_id,
-        //   receiver_id: card_id,
-        //   type: 'Deposit',
-        //   //mobile_card:[{card_id: ""}],
-        //   createdAt: new Date().getTime(),
-        //   status: 'Approve',
-        //   amount: amount,
-        //   description: 'Nạp tiền vào ví '+req.session.user_id,
-        // })
-        console.log("---4"+result)
-        return res.json({status:'Nạp thành công'})
+
+        const insertMany = await Trade.insertMany({
+          sender_id: req.session.user_id,
+          receiver_id: card_id,
+          type: 'Deposit',
+          //mobile_card:[{card_id: ""}],
+          createdAt: new Date().getTime(),
+          status: 'Approve',
+          amount: amount,
+          description: 'Nạp tiền vào ví ' + req.session.user_id
+        });
+      
+        var x1 =updateCreditCard;
+        var x2 =update_a_user;
+        var x3 =insertMany;
+        res.send(JSON.stringify({color:'green', status: 'Nạp tiền vào ví thành công' }))
+        //console.log(x)
+        //res.send(JSON.stringify(x[0]));
+
       }
+
     }
 
   })
+  
 })
 
 

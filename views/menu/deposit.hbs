@@ -1,6 +1,7 @@
-<div class="container">
-    <form action="/users/deposit" method="post">
-        <h3> Thông tin thẻ để nạp tiền vào ví</h3>
+<div class="container" >
+    <h4 id="12345"></h4>
+    {{!-- <form action="/users/deposit" method="post"> --}}
+        <h3 > Thông tin thẻ để nạp tiền vào ví</h3>
         <div class="mb-3">
             <label for="deposit_card_id" class="form-label">ID thẻ</label>
             <input type="text" class="form-control" id="deposit_card_id" name="deposit_card_id" required
@@ -26,6 +27,6 @@
             <h4 class="mt-3 text-end">Tổng tiền: <span class="text-danger" id="u-deposit-total">0 đ</span></h4>
         </div>
         <button type="submit" id="u-deposit-btn"
-         class="btn btn-success u-btn-submit">Submit</button>
-    </form>
+         class="btn btn-success u-btn-submit" onclick="submit_deposit()">Submit</button>
+    {{!-- </form> --}}
 </div>
