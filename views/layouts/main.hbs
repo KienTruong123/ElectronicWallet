@@ -35,7 +35,6 @@
         <div class="nav-item dropdown">
           <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Dịch vụ</a>
           <div class="dropdown-menu m-0">
-            <a href="blog.html" class="dropdown-item"></a>
             <a class="dropdown-item" data-bs-toggle="collapse" data-bs-target="#multiCollapseDeposit">Nạp tiền</a>
             <a class="dropdown-item" data-bs-toggle="collapse" data-bs-target="#multiCollapseWithdraw">Rút Tiền</a>
             <a class="dropdown-item" data-bs-toggle="collapse" data-bs-target="#multiCollapseTransfer">Chuyển
@@ -45,14 +44,21 @@
               dịch</a>
           </div>
         </div>
-
-        <a  data-bs-toggle="collapse" data-bs-target="#multiCollapseInformation" class="nav-item nav-link">Thông tin cá nhân</a>
+       
+ 
 
 
       </div>
 
-      <div class="d-none d-lg-flex align-items-center ps-4">
-        <a href="/logout" class="nav-item nav-link">Đăng Xuất</a>
+      <div class="d-none d-lg-flex align-items-center">
+         <div class="nav-item dropdown">
+          <img width="65" src="https://i.pravatar.cc/150?u={{user.id}}" alt="Avatar"
+                class=" nav-link dropdown-toggle rounded-circle" data-bs-toggle="dropdown" data-bs-target="#multiCollapseInformation"  />
+          <div class="dropdown-menu m-0">
+            <a class="dropdown-item" data-bs-toggle="collapse" data-bs-target="#multiCollapseInformation">Thông tin cá nhân</a>
+            <a href="/logout" class="dropdown-item" data-bs-toggle="collapse"> Đăng xuất</a>
+          </div>
+        </div>
       </div>
   </nav>
   <div class="container">
