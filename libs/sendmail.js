@@ -1,6 +1,6 @@
 
 const nodemailer = require("nodemailer");
-const sendMail = require('../model/sms');
+const sendMail = require('../model/smsModel');
 const User = require('../model/userModel')
 const random = require('../libs/random')
 const bcrypt = require('bcrypt')

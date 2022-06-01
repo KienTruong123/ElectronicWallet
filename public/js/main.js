@@ -7,20 +7,20 @@ window.addEventListener("load", () => {
     let u_menu_fee_withdraw = document.querySelector("#u-menu-fee-withdraw")
     let u_menu_total = document.querySelector("#u-menu-total2")
 
-    if(u_withdraw)
-    u_withdraw.addEventListener("change", () => {
-        u_menu_fee_withdraw.innerHTML = parseFloat((u_withdraw.value * 0.05).toFixed(0)).toLocaleString() + "đ";
-        u_menu_total.innerHTML = parseFloat((u_withdraw.value * 1.05).toFixed(0)).toLocaleString() + "đ";
-    });
+    if (u_withdraw)
+        u_withdraw.addEventListener("change", () => {
+            u_menu_fee_withdraw.innerHTML = parseFloat((u_withdraw.value * 0.05).toFixed(0)).toLocaleString() + "đ";
+            u_menu_total.innerHTML = parseFloat((u_withdraw.value * 1.05).toFixed(0)).toLocaleString() + "đ";
+        });
 
     //--- DEPOSIT PAGE
     let u_deposit_money = document.querySelector("#deposit_money")
     let u_deposit_total = document.querySelector("#u-deposit-total")
 
-    if(u_deposit_money)
-    u_deposit_money.addEventListener("change", () => {
-        u_deposit_total.innerHTML = (u_deposit_money.value * 1).toLocaleString() + "đ";
-    })
+    if (u_deposit_money)
+        u_deposit_money.addEventListener("change", () => {
+            u_deposit_total.innerHTML = (u_deposit_money.value * 1).toLocaleString() + "đ";
+        })
 
     //--- TRANSFER PAGE
     let t_reveiver_money = document.querySelector("#t_reveiver_money")
@@ -28,35 +28,35 @@ window.addEventListener("load", () => {
     let t_reveiver_total = document.querySelector("#t_reveiver_total")
     //let u_deposit_money = document.querySelector("#deposit_money")
 
-    if(t_reveiver_money)
-    t_reveiver_money.addEventListener("change", () => {
-        t_reveiver_fee_withdraw.innerHTML = parseFloat((t_reveiver_money.value * 0.05).toFixed(0)).toLocaleString() + "đ";
-        t_reveiver_total.innerHTML = parseFloat((t_reveiver_money.value * 1.05).toFixed(0)).toLocaleString() + "đ";
-    });
+    if (t_reveiver_money)
+        t_reveiver_money.addEventListener("change", () => {
+            t_reveiver_fee_withdraw.innerHTML = parseFloat((t_reveiver_money.value * 0.05).toFixed(0)).toLocaleString() + "đ";
+            t_reveiver_total.innerHTML = parseFloat((t_reveiver_money.value * 1.05).toFixed(0)).toLocaleString() + "đ";
+        });
 
     let button_send_otp_transfer = document.querySelector("#button_send_otp_transfer")
 
-    if(button_send_otp_transfer)
-    button_send_otp_transfer.addEventListener("click", e => {
-        e.preventDefault()
-        button_send_otp_transfer.disabled = true
-        let t_count = 60
+    if (button_send_otp_transfer)
+        button_send_otp_transfer.addEventListener("click", e => {
+            e.preventDefault()
+            button_send_otp_transfer.disabled = true
+            let t_count = 60
 
-        let timer = setInterval(() => {
-            if (t_count == 0) {
-                clearInterval(timer)
-                button_send_otp_transfer.innerHTML = 'Gửi mã OTP'
-            }
-            else {
-                t_count--;
-                button_send_otp_transfer.innerHTML = 'Gửi lại sau ' + t_count + ' s'
-            }
+            let timer = setInterval(() => {
+                if (t_count == 0) {
+                    clearInterval(timer)
+                    button_send_otp_transfer.innerHTML = 'Gửi mã OTP'
+                }
+                else {
+                    t_count--;
+                    button_send_otp_transfer.innerHTML = 'Gửi lại sau ' + t_count + ' s'
+                }
 
-        }, 1000)
-        setTimeout(() => {
-            button_send_otp_transfer.disabled = false
-        }, 60000)
-    })
+            }, 1000)
+            setTimeout(() => {
+                button_send_otp_transfer.disabled = false
+            }, 60000)
+        })
 
 
     //DEPOSIT
@@ -78,7 +78,7 @@ window.addEventListener("load", () => {
 
 })
 
-function transfer_submit(){
+function transfer_submit() {
     $.post(
         "/users/transfer",
         {
@@ -89,21 +89,21 @@ function transfer_submit(){
             t_fee_user: $('.t_fee_user:checked').val()
         },
         (data, state) => {
-            if(data[0]== undefined){
-                document.getElementById("transfer_alert").innerHTML= data.status
+            if (data[0] == undefined) {
+                document.getElementById("transfer_alert").innerHTML = data.status
                 document.getElementById("transfer_alert").style.color = data.color
                 document.getElementById("t_reveiver_fee_withdraw").innerHTML = "0 đ"
                 document.getElementById("t_reveiver_total").innerHTML = "0 đ"
             }
-            else{
-                document.getElementById("12345").innerHTML=data[0].status
+            else {
+                document.getElementById("12345").innerHTML = data[0].status
             }
-            document.querySelector('#t_reveiver_phone').value=null;
-            document.querySelector('#t_reveiver_desc').value=null;
-            document.querySelector('#t_reveiver_money').value=1;
-            document.querySelector('#t_reveiver_otp').value=null ;
-            document.querySelector('#t_reveiver_fee_withdraw').innerHTML ='0 đ'
-            document.querySelector('#t_reveiver_total').innerHTML ='0 đ'
+            document.querySelector('#t_reveiver_phone').value = null;
+            document.querySelector('#t_reveiver_desc').value = null;
+            document.querySelector('#t_reveiver_money').value = 1;
+            document.querySelector('#t_reveiver_otp').value = null;
+            document.querySelector('#t_reveiver_fee_withdraw').innerHTML = '0 đ'
+            document.querySelector('#t_reveiver_total').innerHTML = '0 đ'
         }
     )
 }
@@ -180,17 +180,17 @@ function sendOTP() {
         processData: false,
         method: 'POST',
         type: 'POST', // For jQuery < 1.9
-        success: function(data){
-           if(data.valid){
+        success: function (data) {
+            if (data.valid) {
                 $('#register_error').removeClass('alert-danger').addClass('alert-success').html(data.message)
-           }
-           else{
-            $('#register_error').removeClass('alert-success').addClass('alert-danger').html(data.message)
-           }
+            }
+            else {
+                $('#register_error').removeClass('alert-success').addClass('alert-danger').html(data.message)
+            }
         },
-        error:function(error){
+        error: function (error) {
             $('#register_error').removeClass('alert-success').addClass('alert-danger').html(data.message)
-            alert('Error: ',"Something went wrong :(")
+            alert('Error: ', "Something went wrong :(")
             console.log(error)
         }
     });
@@ -270,17 +270,17 @@ function cleanChangePassword() {
 var tblhistory = document.getElementById('tbl-history');
 var dataHistory;
 
-var dictTypeTran= {
-                    "Withdraw": {"icon":"https://cdn-icons.flaticon.com/png/128/2769/premium/2769253.png?token=exp=1653990557~hmac=0c0cf38d3d8687bed08c8a3b46c2803d", "type": "Rút tiền"},
-                    "Deposit": {"icon":"https://cdn-icons-png.flaticon.com/128/2721/2721121.png", "type": "Nạp tiền"},
-                    "Transfer": {"icon":"https://cdn-icons-png.flaticon.com/128/3029/3029373.png", "type": "Chuyển tiền"},
-                    "CardPay": {"icon":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAHX1HEiFdZ6QJQn3IPsox9WH8xT20xiaAvQiNyUZTmcN8MCI6oSWhGIsrzIs0XosR5MU&usqp=CAU", "type": "Mua thẻ cào"},
-                }
-var dictStatus={
-                    "Approve":"Chấp nhận",
-                    "Waiting":"Đang chờ",
-                    "Successed":"Thành công",
-                    "Failed":"Thất bại"
+var dictTypeTran = {
+    "Withdraw": { "icon": "https://cdn-icons.flaticon.com/png/128/2769/premium/2769253.png?token=exp=1653990557~hmac=0c0cf38d3d8687bed08c8a3b46c2803d", "type": "Rút tiền" },
+    "Deposit": { "icon": "https://cdn-icons-png.flaticon.com/128/2721/2721121.png", "type": "Nạp tiền" },
+    "Transfer": { "icon": "https://cdn-icons-png.flaticon.com/128/3029/3029373.png", "type": "Chuyển tiền" },
+    "CardPay": { "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAHX1HEiFdZ6QJQn3IPsox9WH8xT20xiaAvQiNyUZTmcN8MCI6oSWhGIsrzIs0XosR5MU&usqp=CAU", "type": "Mua thẻ cào" },
+}
+var dictStatus = {
+    "Approve": "Chấp nhận",
+    "Waiting": "Đang chờ",
+    "Successed": "Thành công",
+    "Failed": "Thất bại"
 }
 // AJAX TRADE HISTORY
 function tradeHistory() {
@@ -302,7 +302,7 @@ function tradeHistory() {
         url: "/trades/history",
         success: function (data) {
             dataHistory = data;
-            var i=0;
+            var i = 0;
             data.forEach(element => {
                 if (element.sender_id != null) {
                     let date = new Date(element.createdAt);
@@ -328,42 +328,59 @@ function tradeHistory() {
     $('#tbl-history').show();
 }
 
-function viewHistory(id){
+async function viewHistory(id) {
     $('#d-show-info').show();
     $('#tbl-history').hide();
+    var data = dataHistory[id];
+    let date = new Date(data.createdAt);
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let dt = date.getDate();
+    var mathe = '';
+    var head = `<div class="row">
+                    <div class="col-4">
+                        <p>Người gửi:</p>
+                    </div>
+                    <div class="col">
+                    ${data.sender_id}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <p>Người nhận: </p>
+                    </div>
+                    <div class="col">
+                    ${data.receiver_id}
+                    </div>
+                </div>`
 
-    var data=dataHistory[id];
-    var mathe=''
-    if(data.type==="CardPay"){
-        console.log("sks")
-        for (let index = 0; index < data.mobile_card.length; index++) {
-            var element = data.mobile_card[index];
-            mathe+= element;
-        } 
-    }
-    document.getElementById("d-show-info").innerHTML=` <div class="row">
-                                                            <div class="col-4">
-                                                                <p>Người gửi:</p>
-                                                            </div>
-                                                            <div class="col">
-                                                            ${data.sender_id}
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-4">
-                                                                <p>Người nhận: </p>
-                                                            </div>
-                                                            <div class="col">
-                                                            ${data.receiver_id}
-                                                            </div>
-                                                        </div>
+    if (data.type === "CardPay") {
+        head = `<div class="row">
+                    <div class="col-4">
+                        <p>Loại thẻ: </p>
+                    </div>
+                    <div class="col">
+                    ${data.receiver_id}
+                    </div>
+                </div>`
+        if (data.type === "CardPay") {
+            console.log("sks")
+            for (let index = 0; index < data.mobile_card.length; index++) {
+                var cardcode = await viewDetailCard(data.mobile_card[index])
+                mathe += `<div class="row">  <div class="col-4">  <p>Mã thẻ: </p></div> <div class="col">`;
+                var element = `<button class='btn btn-primary ms-3 mb-3' >${cardcode}</button>`
+                mathe += element;
+                mathe += `</div></div>`;
+            }
+        }
+        document.getElementById("d-show-info").innerHTML = ` ${head}
                                                         ${mathe}
                                                         <div class="row">
                                                             <div class="col-4">
                                                                 <p>Ngày giao dịch:</p>
                                                             </div>
                                                             <div class="col">
-                                                            ${data.createdAt}
+                                                            ${dt}-${month}-${year}
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -384,6 +401,14 @@ function viewHistory(id){
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-4">
+                                                                <p>Loại giao dịch:</p>
+                                                            </div>
+                                                            <div class="col">
+                                                            ${dictTypeTran[data.type]['type']}
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-4">
                                                                 <p>Mô tả: </p>
                                                             </div>
                                                             <div class="col">
@@ -391,22 +416,43 @@ function viewHistory(id){
                                                             </div>
                                                         </div>`
 
+    }
 }
+
+
+async function viewDetailCard(id) {
+    let rdata;
+    await $.post("/trades/card/detail",
+        {
+            id: id
+        },
+        function (data, status) {
+            if (data.err != null) {
+                alert(data.message);
+            } else {
+                rdata = data.code;
+            }
+        })
+    return rdata;
+};
+
+
+
 //-----------------------------------------------------------------------------------------------------------
 // trọng JS
 
 
-function trade_deleteModal(e){
+function trade_deleteModal(e) {
 
     $('#confirm-delete').modal('toggle')
 }
 
-function trade_acceptModal(e){
+function trade_acceptModal(e) {
 
     $('#confirm-accept').modal('toggle')
 }
 
-function deleteModal(e){
+function deleteModal(e) {
     let name = document.getElementById('name').innerHTML
     let del_modal = document.getElementById('confirm-delete')
     let modal_name = del_modal.getElementsByClassName('name')[0]
@@ -414,7 +460,7 @@ function deleteModal(e){
     $('#confirm-delete').modal('toggle')
 }
 
-function acceptModal(e){
+function acceptModal(e) {
     let name = document.getElementById('name').innerHTML
     let acc_modal = document.getElementById('confirm-accept')
     let modal_name = acc_modal.getElementsByClassName('name')[0]
@@ -422,7 +468,7 @@ function acceptModal(e){
     $('#confirm-accept').modal('toggle')
 }
 
-function requestModal(e){
+function requestModal(e) {
     let name = document.getElementById('name').innerHTML
     let acc_modal = document.getElementById('confirm-request')
     let modal_name = acc_modal.getElementsByClassName('name')[0]
@@ -430,7 +476,7 @@ function requestModal(e){
     $('#confirm-request').modal('toggle')
 }
 
-function unlockModal(e){
+function unlockModal(e) {
     let name = document.getElementById('name').innerHTML
     let acc_modal = document.getElementById('confirm-unlock')
     let modal_name = acc_modal.getElementsByClassName('name')[0]
@@ -438,7 +484,7 @@ function unlockModal(e){
     $('#confirm-unlock').modal('toggle')
 }
 
-function recoverModal(e){
+function recoverModal(e) {
     let name = document.getElementById('name').innerHTML
     let acc_modal = document.getElementById('confirm-recover')
     let modal_name = acc_modal.getElementsByClassName('name')[0]
@@ -446,7 +492,7 @@ function recoverModal(e){
     $('#confirm-recover').modal('toggle')
 }
 
-function saveModal(e){
+function saveModal(e) {
     let name = document.getElementById('name').innerHTML
     let acc_modal = document.getElementById('confirm-save')
     let modal_name = acc_modal.getElementsByClassName('name')[0]
@@ -454,62 +500,61 @@ function saveModal(e){
     $('#confirm-save').modal('toggle')
 }
 
-function adminUpdateUser(id,type){
+function adminUpdateUser(id, type) {
     console.log("ADMIN UDDATE")
     console.log(id)
     console.log(type)
     $.ajax({
         url: '/admin/updateUser',
-        method:'post',
-        data: {type: type,id: id},
-        success:function(data){
-            if(data.valid){
-                toast('success','Update successfully',data.message)
+        method: 'post',
+        data: { type: type, id: id },
+        success: function (data) {
+            if (data.valid) {
+                toast('success', 'Update successfully', data.message)
             }
-            else{
-                toast('danger','Update fail',data.message)
+            else {
+                toast('danger', 'Update fail', data.message)
             }
         },
-        error:function(error){
-            alert('Error: ',"Something went wrong :(")
-            toast('danger','Update Fail','Something went wrong.')
+        error: function (error) {
+            alert('Error: ', "Something went wrong :(")
+            toast('danger', 'Update Fail', 'Something went wrong.')
         }
-    }) 
+    })
 }
 
-function adminUpdateTrade(id,type){
+function adminUpdateTrade(id, type) {
     console.log("ADMIN UPDATE TRANSACTION")
     console.log(id)
     console.log(type)
     $.ajax({
         url: '/admin/updateTrade',
-        method:'post',
-        data: {type: type,id: id},
-        success:function(data){
-            if(data.valid){
-                toast('success',type+' successfully',data.message)
+        method: 'post',
+        data: { type: type, id: id },
+        success: function (data) {
+            if (data.valid) {
+                toast('success', type + ' successfully', data.message)
             }
-            else{
-                toast('danger',type+' fail',data.message)
+            else {
+                toast('danger', type + ' fail', data.message)
             }
         },
-        error:function(error){
-            alert('Error: ',"Something went wrong :(")
-            toast('danger',type+' fail','Something went wrong.')
+        error: function (error) {
+            alert('Error: ', "Something went wrong :(")
+            toast('danger', type + ' fail', 'Something went wrong.')
         }
-    }) 
+    })
 }
 
-function toast(type,title,body){
-    if(type=='success'){
+function toast(type, title, body) {
+    if (type == 'success') {
         color = "#238b23"
         background = "#bdf3bd"
     }
-    else
-        {
-            color = "rgb(209, 77, 74)"
-            background = "rgb(249, 179, 178)"
-        }
+    else {
+        color = "rgb(209, 77, 74)"
+        background = "rgb(249, 179, 178)"
+    }
     let toast = document.getElementById('toastDialog')
     let toastColor = toast.getElementsByClassName('toast-header')[0]
     toastColor.style.color = color
@@ -531,7 +576,7 @@ function toast(type,title,body){
 
 
 
-async function convert2Buffer(blob){
+async function convert2Buffer(blob) {
     return new Promise((resolve) => {
         const reader = new FileReader()
         reader.onload = () => {
@@ -549,14 +594,14 @@ function toBase64(buffer) {
     var bytes = new Uint8Array(buffer.data);
     var len = bytes.byteLength;
     for (var i = 0; i < len; i++) {
-      binary += String.fromCharCode(bytes[i]);
+        binary += String.fromCharCode(bytes[i]);
     }
     console.log("window btoa")
     console.log(window.btoa(binary))
     return window.btoa(binary);
-  }
+}
 
-async function sendInformationRegister(e){
+async function sendInformationRegister(e) {
     var data = new FormData();
     let phone = $('#user_phone').val()
     let email = $('#user_email').val()
@@ -569,13 +614,13 @@ async function sendInformationRegister(e){
     let image2 = $('#user_cmnd2').prop('files')[0]
     console.log(image1)
     console.log(image2)
-    data.set('image1',image1)
-    data.set('image2',image2)
-    data.set('phone',phone)
-    data.set('email',email)
-    data.set('name',name)
-    data.set('bdate',bdate)
-    data.set('address',address)
+    data.set('image1', image1)
+    data.set('image2', image2)
+    data.set('phone', phone)
+    data.set('email', email)
+    data.set('name', name)
+    data.set('bdate', bdate)
+    data.set('address', address)
 
     console.log(phone)
     console.log(data)
@@ -588,28 +633,28 @@ async function sendInformationRegister(e){
         processData: false,
         method: 'POST',
         type: 'POST', // For jQuery < 1.9
-        success: function(data){
-           if(data.valid){
+        success: function (data) {
+            if (data.valid) {
                 $('#register_error').removeClass('alert-danger').addClass('alert-success').html(data.message)
-           }
-           else{
-            $('#register_error').removeClass('alert-success').addClass('alert-danger').html(data.message)
-           }
+            }
+            else {
+                $('#register_error').removeClass('alert-success').addClass('alert-danger').html(data.message)
+            }
         },
-        error:function(error){
-            alert('Error: ',"Something went wrong :(")
+        error: function (error) {
+            alert('Error: ', "Something went wrong :(")
             console.log(error)
         }
     });
- }
+}
 
-async function sendCMND(e){
+async function sendCMND(e) {
     var data = new FormData();
     let image1 = $('#id-card-front').prop('files')[0]
     let image2 = $('#id-card-back').prop('files')[0]
-    data.set('image1',image1)
-    data.set('image2',image2)
-    
+    data.set('image1', image1)
+    data.set('image2', image2)
+
     $.ajax({
         url: 'users/uploadCMND',
         data: data,
@@ -618,22 +663,22 @@ async function sendCMND(e){
         processData: false,
         method: 'POST',
         type: 'POST', // For jQuery < 1.9
-        success: function(data){
+        success: function (data) {
             let error = $('#cmnd-error')
-           if(data.valid){
+            if (data.valid) {
                 $('#cmnd-error').removeClass('text-danger').addClass('text-success').html(data.message)
-           }
-           else{
-            $('#cmnd-error').removeClass('text-success').addClass('text-danger').html(data.message)
-           }
+            }
+            else {
+                $('#cmnd-error').removeClass('text-success').addClass('text-danger').html(data.message)
+            }
         },
-        error:function(error){
-            alert('Error: ',"Something went wrong :(")
-            toast('danger','Update Fail','Something went wrong.')
+        error: function (error) {
+            alert('Error: ', "Something went wrong :(")
+            toast('danger', 'Update Fail', 'Something went wrong.')
         }
     });
 }
-async function sendInformationRegister(e){
+async function sendInformationRegister(e) {
     var data = new FormData();
     let phone = $('#user_phone').val()
     let email = $('#user_email').val()
@@ -646,13 +691,13 @@ async function sendInformationRegister(e){
     let image2 = $('#user_cmnd2').prop('files')[0]
     console.log(image1)
     console.log(image2)
-    data.set('image1',image1)
-    data.set('image2',image2)
-    data.set('phone',phone)
-    data.set('email',email)
-    data.set('name',name)
-    data.set('bdate',bdate)
-    data.set('address',address)
+    data.set('image1', image1)
+    data.set('image2', image2)
+    data.set('phone', phone)
+    data.set('email', email)
+    data.set('name', name)
+    data.set('bdate', bdate)
+    data.set('address', address)
 
     console.log(phone)
     console.log(data)
@@ -665,19 +710,19 @@ async function sendInformationRegister(e){
         processData: false,
         method: 'POST',
         type: 'POST', // For jQuery < 1.9
-        success: function(data){
-           if(data.valid){
+        success: function (data) {
+            if (data.valid) {
                 $('#register_error').removeClass('alert-danger').addClass('alert-success').html(data.message)
-           }
-           else{
-            $('#register_error').removeClass('alert-success').addClass('alert-danger').html(data.message)
-           }
+            }
+            else {
+                $('#register_error').removeClass('alert-success').addClass('alert-danger').html(data.message)
+            }
         },
-        error:function(error){
-            alert('Error: ',"Something went wrong :(")
+        error: function (error) {
+            alert('Error: ', "Something went wrong :(")
             console.log(error)
         }
     });
- }
+}
 
 //-----------------------------------------------------------------------------------------------------------
