@@ -56,7 +56,10 @@ router.post('/login', function (req, res, next) {
 
   a_user.findOne({ phone: uid })
     .then(async result => {
+
+      console.log(result)
       if (!result || result.length === 0) {
+        console.log('now here 1')
         req.session.flash = { type: 'danger', message: 'Sai tài khoản hoặc mật khẩu.' }
         return res.redirect('/login');
       }
@@ -65,15 +68,17 @@ router.post('/login', function (req, res, next) {
           req.session.flash = { type: 'danger', message: 'Tài khoản của bạn bị Khóa vĩnh viễn' }
           return res.redirect('/login')
         }
-        else if (result.secure_status > 2 && (new Date().getTime() - result.lockedAt < 1000 * 60)) {
+        else if (result.secure_status > 2 && (new Date().getTime() - result.lockedAt < 1000 * 60)) {        
           req.session.flash = { type: 'danger', message: 'Tài khoản của bạn bị tạm khóa 1 phút' }
           return res.redirect('/login')
         }
         //console.log(pass)
         //console.log(result.password)
+        
         const match = bcrypt.compareSync(pass, result.password)
         //console.log(match)
         if (match) {
+         
           req.session.user_id = uid
           req.session.user_oid = result._id
           req.session.user = result

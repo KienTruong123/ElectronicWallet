@@ -644,6 +644,16 @@ async function sendInformationRegister(e){
     console.log($('#user_cmnd2'))
     let image1 = $('#user_cmnd1').prop('files')[0]
     let image2 = $('#user_cmnd2').prop('files')[0]
+
+    if(!phone || !email || !name || !bdate || !address){
+        $('#register_error').removeClass('alert-success').addClass('alert-danger').html("Hãy nhập đủ thông tin đăng kí.")
+        return;
+    }
+    if(!image1 || !image2){
+        $('#register_error').removeClass('alert-success').addClass('alert-danger').html("Hãy upload đủ 2 ảnh chứng minh nhân dân (trước, sau)")
+        return;
+    }
+
     console.log(image1)
     console.log(image2)
     data.set('image1',image1)
@@ -675,7 +685,7 @@ async function sendInformationRegister(e){
         },
         error:function(error){
             alert('Error: ',"Something went wrong :(")
-            console.log(error)
+            $('#register_error').removeClass('alert-success').addClass('alert-danger').html("Có lỗi xảy ra, không thể đăng kí được.")
         }
     });
  }

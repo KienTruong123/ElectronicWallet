@@ -225,12 +225,13 @@ router.post('/transfer', async function (req, res, next) {
     if (t_reveiver_otp == null) {
       res.send(JSON.stringify({ color: 'red', status: 'Thiếu mã OTP' }))
       return;
-    }
+    } 
     else if (t_reveiver_money < 1) {
       res.send(JSON.stringify({ color: 'red', status: 'Số tiền chuyển phải lớn hơn 1' }))
       return;
     }
-    let smsCode = SMS.find({sender_id: req.session.user_oid}).lean()
+    let smsCode = await SMS.findOne({sender_id: req.session.user_id}).lean()
+    //console.log(smsCode)
 
     await a_user.findOne({
       phone: t_reveiver_phone
@@ -249,6 +250,13 @@ router.post('/transfer', async function (req, res, next) {
             return;
           }
           else {
+            //OTP CHECK
+            if(t_reveiver_otp!= smsCode.code || new Date().getTime() - smsCode.createdAt >=60000){
+              res.send(JSON.stringify({ color: 'red', status: 'OTP không hợp lệ hoặc đã hết hạn.' }))
+              return;
+            }
+
+
             if (t_reveiver_money > 5000000) {
               const trade5m = await Trade.insertMany({
                 sender_id: req.session.user_oid,
@@ -459,9 +467,11 @@ router.post('/uploadInformationRegister',cmndUpload, async(req,res)=>{
     }).save()
 
     //send email:
-    let link = await sendmail.validateRegister(req.session.user_id,req.body.email)
+    // let link = sendmail.validateRegister(phone,req.body.email)
+    //send email:
+    let link = sendmail.validateRegister(req.body.phone,req.body.email)
     //redirect to login or first login
-    return res.json({valid: true,message: "Mã SMS đã gửi đến email của bạn. Dùng sms code để đăng nhập xác thực , mã sẽ hết trong vòng 90s\n(Link Demo:"+link+")"})
+    return res.json({valid: true,message: "Mật khẩu tạm thời đã được gửi dưới dạng 6 số vào email của bạn. Vui lòng kiểm tra\n"})
   }
 })
 
@@ -472,7 +482,7 @@ router.post('/sendOTP',async (req,res)=>{
   }
   let link = sendmail.sendSMSCode(req.session.user_id,user.email)
   //redirect to login or first login
-  return res.json({valid: true,message: "Mã SMS đã gửi đến email của bạn. Dùng OTP code để xác thực giao dịch , mã sẽ hết trong vòng 90s"})
+  return res.json({valid: true,message: "Mã SMS đã gửi đến email của bạn. Dùng OTP code để xác thực giao dịch , mã sẽ hết trong vòng 60s"})
 })
 
 // router.get('/card/create', function(req, res, next) {
