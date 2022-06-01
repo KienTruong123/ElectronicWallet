@@ -1,0 +1,333 @@
+<head>
+    <title>Thông tin người dùng</title>
+</head>
+
+
+<section class="vh-100 " style="background-color: #f4f5f7;">
+
+    <div class="">
+        <a href="/admin"><button class="btn btn-primary " 
+        style="position: absolute;font-size: 3vh;left: 1vw;top: 1vw">Quay lại</button></a>
+    </div>
+    {{!-- Toast --}}
+
+
+                {{!-- Toast  --}}
+    <div style="position: sticky!important; right: 1vw!important">
+            <div class="d-flex justify-content-end flex-c" >
+    <div id="toastDialog" class="toast toast-container hide"  data-autohide="true" data-delay="6000">
+      <div class="toast-header" style="background-color: #bdf3bd;">
+          <i class="fa-solid fa-bell" style="color:#f6ea0b ;"></i>&nbsp;
+          <strong class="mr-auto"> Upload </strong>
+          <button type="button" class="ml-2 mb-1 btn-close" data-dismiss="toast" aria-label="Close">
+              <span aria-hidden="true"></span>
+          </button>
+      </div>
+      <div class="toast-body" style="width: 100%;">
+      Toast body
+      </div>
+    </div>
+    </div> 
+    </div>
+
+
+        </div>
+
+    {{!-- Toast --}}
+
+    <p class="text-dark">{{user.user}}</p>
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center ">
+      <div class="col col-lg-8 mb-4 mb-lg-0">
+        <div class="card mb-3" style="border-radius: .5rem;">
+          <div class="row g-0">
+            <div class="col-md-4 gradient-custom text-center text-white"
+              style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
+                alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
+              <h5 id="name">{{user.name}}</h5>
+              <p class="px-2">{{user._id}}</p>
+              {{#ifEquals user.status "Active"}}
+                    <h4 class="text-success">Đã xác thực</h4>
+              {{else}}
+                    {{#ifEquals user.status "Waiting"}}
+                        <h4 class="text-primary">Chờ duyệt</h4>
+                    {{else}}           
+                        {{#ifEquals user.status "Updating"}}
+                            <h4 class="text-primary">Chờ cập nhật</h4>
+                        {{else}}
+                            <h4 class="text-danger">Vô hiệu hóa </h4>
+                        {{/ifEquals}}
+                    {{/ifEquals}}
+              {{/ifEquals}}
+              {{#ifEquals user.secure_status 6}}
+                    <h6 class="text-danger text-decoration-underline fst-italic">Khóa vô thời hạn do đăng nhập bất thường</h6>
+              {{/ifEquals}}
+            </div>
+            <div class="col-md-8">
+              <div class="card-body p-4">
+                <h6>Liên hệ</h6>
+                <hr class="mt-0 mb-4">
+                <div class="row pt-1">
+                  <div class="col-6 mb-3">
+                    <h6>Email</h6>
+                    <p class="text-muted">{{user.email}}</p>
+                  </div>
+                  <div class="col-6 mb-3">
+                    <h6>Điện thoại</h6>
+                    <p class="text-muted">{{user.phone}}</p>
+                  </div>
+                </div>
+                <h6>Thông tin</h6>
+                <hr class="mt-0 mb-4">
+                <div class="row pt-1">
+                  <div class="col-6 mb-3">
+                    <h6>Ngày Sinh</h6>
+                    <p class="text-muted">{{user.birth}}</p>
+                  </div>
+                  <div class="col-6 mb-3">
+                    <h6>Địa điểm</h6>
+                    <p class="text-muted">{{user.address}}</p>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    {{#ifEquals user.status "Waiting" }}
+                        <button class="btn btn-success mx-2" onclick="acceptModal(this)" >Xác Minh</button>
+                        <button class="btn btn-danger mx-2" onclick="deleteModal(this)" >Vô hiệu hóa</button>
+                        <button class="btn btn-warning mx-2" onclick="requestModal(this)" >Yêu cầu cập nhật</button>
+                    {{else}}   
+
+                        {{#ifEquals user.status "Updating"}}
+                            <button class="btn btn-success mx-2" onclick="acceptModal(this)" >Xác Minh</button>
+                            <button class="btn btn-danger mx-2" onclick="deleteModal(this)" >Vô hiệu hóa</button>
+                            <button class="btn btn-warning mx-2" onclick="requestModal(this)" >Yêu cầu cập nhật</button>
+                        {{else}}
+                            {{#ifEquals user.status "Ban"}}      
+                                <button class="btn btn-primary mx-2" onclick="recoverModal(this)" >Khôi phục</button>                       
+                            {{/ifEquals}}
+                        {{/ifEquals}}
+                    {{/ifEquals}}
+
+                    {{#ifGreater user.secure_status 5}}
+                         <button class="btn btn-success mx-2" onclick="unlockModal(this)" >Mở khóa</button>
+                    {{/ifGreater}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col col-lg-4 mb-4 mb-lg-0">
+          <div class="row g-0 pb-2">
+              <h4 style="text-align: center;">Ảnh CMND</h4>
+          </div>
+            {{#if user.image1}}
+                    <div class="row g-0">
+                        <img id="cmnd1" src="/{{user.email}}/{{user.image1}}">
+                    </div>
+            {{else}}
+               <div class="row g-0 text-muted" style="text-align: center;color: gray">
+                    <h4>Chưa có ảnh</h4>
+                </div>
+            {{/if}}
+            {{#if user.image2}}
+                <div class="row g-0">
+                    <img id="cmnd2" src="/{{user.email}}/{{user.image2}}">
+                </div>
+            {{else}}
+                <div class="row g-0 text-muted" style="text-align: center;color: gray">
+                    <h4>Chưa có ảnh</h4>
+                </div>
+            {{/if}}
+      </div>
+    </div>
+    
+    <h4>Các giao dịch trong 1 tháng gần đây</h4>
+
+    <div class="row d-flex justify-content-center align-items-center ">
+        <table class="table table-hover table-striped border">
+            <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Sender</th>
+                    <th>Receiver</th>
+                    <th>Amount</th>
+                    <th>Created At</th>
+                    <th>Status</th>
+                  </tr>
+            </thead>
+            <tbody>
+
+                {{#each trade_list}}
+                    {{#ifEquals type 'Withdraw'}}
+                        <tr>
+                            <td><a href="../trades/{{_id}}">{{_id}}</a></td>
+                            <td><a href="./{{sender_id}}">{{sender_name}}</a></td>
+                            <td> <a >{{receiver_name}}</td>
+                            <td>{{amount}}</td>
+                            <td>{{createdAt}}</td>
+                            <td>{{status}}</td>
+                        </tr>
+                    {{else}}
+                        {{#ifEquals type 'Deposit'}}
+                            <tr>
+                                <td><a href="../trades/{{_id}}">{{_id}}</a></td>
+                                <td><a>{{sender_name}}</a></td>
+                                <td> <a href="./{{receiver_id}}">{{receiver_name}}</td>
+                                <td>{{amount}}</td>
+                                <td>{{createdAt}}</td>
+                                <td>{{status}}</td>
+                            </tr>
+                        {{!-- type == Transfer --}}
+                        {{else}}
+                            <tr>
+                                <td><a href="../trades/{{_id}}">{{_id}}</a></td>
+                                <td><a href="./{{sender_id}}">{{sender_name}}</a></td>
+                                <td> <a href="./{{receiver_id}}">{{receiver_name}}</td>
+                                <td>{{amount}}</td>
+                                <td>{{createdAt}}</td>
+                                <td>{{status}}</td>
+                            </tr>
+                        {{/ifEquals}}
+
+                    {{/ifEquals}}
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+  </div>
+</section>
+
+
+{{!-- Delete Modal --}}
+    <div class="modal fade" id="confirm-delete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Vô hiệu hóa người dùng</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Bạn có không đồng ý kích hoạt và muốn vô hiệu hóa <strong class="name">unknown</strong> ?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger confirm-delete-btn" onclick="adminUpdateUser('{{user._id}}','inactive')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{{!-- Accept Modal --}}
+    <div class="modal fade" id="confirm-accept">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Xác minh người dùng </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Bạn có muốn xác minh <strong class="name">unknown</strong> ?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success confirm-accept-btn" onclick="adminUpdateUser('{{user._id}}','active')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{{!-- Request Modal --}}
+    <div class="modal fade" id="confirm-request">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Yều cầu cập nhật </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Bạn có muốn yêu cầu <strong class="name">unknown</strong> cập nhật thông tin ?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success confirm-request-btn" onclick="adminUpdateUser('{{user._id}}','request')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{{!-- Unlock Modal --}}
+    <div class="modal fade" id="confirm-unlock">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Mở khóa</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Bạn có muốn mở khóa cho <strong class="name">unknown</strong> ?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success confirm-unlock-btn" onclick="adminUpdateUser('{{user._id}}','unlock')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {{!-- Recover Modal --}}
+    <div class="modal fade" id="confirm-recover">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Khôi phục </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Bạn đã vô hiệu hóa tài khoản này, bạn có muốn khôi phục lại <strong class="name">unknown</strong> ?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success confirm-recover-btn" onclick="adminUpdateUser('{{user._id}}','recover')" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{{!-- Save Modal --}}
+    <div class="modal fade" id="confirm-save">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Lưu thông tin <strong class="name">unknown</strong></h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Bạn có muốn lưu thông tin người dùng lại  ?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success confirm-save-btn" data-bs-dismiss="modal">Tiếp tục</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>

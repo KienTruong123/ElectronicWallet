@@ -8,6 +8,12 @@ var random = require('../libs/random');
 const a_user = require('../model/userModel')
 const CreditCard = require('../model/creditcardModel')
 const Trade = require('../model/tradeModel')
+const User = require('../model/userModel')
+const SMS = require('../model/smsModel')
+const fs = require('fs');
+const multer = require('multer')
+const path = require('path')
+const uploader = multer({dest: path.join(__dirname,"..\\uploads")})
 
 /* GET users listing. */
 // middleware này dùng để test
@@ -87,7 +93,7 @@ router.post('/deposit', async function (req, res, next) {
 
           const insertMany = await Trade.insertMany({
             sender_id: req.session.user_oid,
-            receiver_id: card_id,
+            receiver_id: result._id,
             type: 'Deposit',
             //mobile_card:[{card_id: ""}],
             createdAt: new Date().getTime(),
@@ -152,7 +158,7 @@ router.post('/withdraw', async function (req, res, next) {
           return;
         }
         else {
-          if (amount < 5000000) {
+          if (amount <= 5000000) {
             const updateCreditCard = await CreditCard.updateOne(
               { sender_id: card_id },
               { $inc: { balance: amount } }
@@ -163,7 +169,7 @@ router.post('/withdraw', async function (req, res, next) {
             )
             const insertMany2 = await Trade.insertMany({
               sender_id: req.session.user_oid,
-              receiver_id: card_id,
+              receiver_id: result._id,
               type: 'Withdraw',
               //mobile_card:[{card_id: ""}],
               createdAt: new Date().getTime(),
@@ -181,7 +187,7 @@ router.post('/withdraw', async function (req, res, next) {
           else {
             const insertMany3 = await Trade.insertMany({
               sender_id: req.session.user_oid,
-              receiver_id: card_id,
+              receiver_id: result._id,
               type: 'Withdraw',
               //mobile_card:[{card_id: ""}],
               createdAt: new Date().getTime(),
@@ -224,6 +230,7 @@ router.post('/transfer', async function (req, res, next) {
       res.send(JSON.stringify({ color: 'red', status: 'Số tiền chuyển phải lớn hơn 1' }))
       return;
     }
+    let smsCode = SMS.find({sender_id: req.session.user_oid}).lean()
 
     await a_user.findOne({
       phone: t_reveiver_phone
@@ -242,7 +249,7 @@ router.post('/transfer', async function (req, res, next) {
             return;
           }
           else {
-            if (t_reveiver_money >= 5000000) {
+            if (t_reveiver_money > 5000000) {
               const trade5m = await Trade.insertMany({
                 sender_id: req.session.user_oid,
                 receiver_id: result._id,
@@ -343,6 +350,130 @@ router.post('/transfer', async function (req, res, next) {
 
 })
 
+const cmndUpload = uploader.fields([{name: 'image1',maxCount: 1},{name:'image2',maxCount:1}])
+router.post('/uploadCMND',cmndUpload, async (req,res)=>{
+  let image1 = req.files['image1'][0]
+  let image2 = req.files['image2'][0]
+  let user_id = req.session.user_id
+  
+  console.log("GET HR")
+
+  console.log("User id :"+user_id)
+  //console.log(image1[0].path)
+
+
+  let user = await User.findOne({phone: user_id}).lean()
+  if(!user){
+    return res.json({valid: false,message:"Can't find user with id"+user_id})
+  }
+    console.log(user)
+    console.log(user.email)
+    console.log(image1)
+    console.log(path.extname(image1.path))
+    //create folder for user
+    let userFolder = path.join(__dirname,'../uploads/'+user.email)
+    let image1Sample = path.join(userFolder,'cmnd1'+path.extname(image1.originalname))
+    let image2Sample = path.join(userFolder,'cmnd2'+path.extname(image2.originalname))
+
+    console.log(image1Sample)
+    console.log(image2Sample)
+
+    if(!fs.existsSync(userFolder)){
+      fs.mkdirSync(userFolder, 0744,true);
+    }
+
+    /// store image 1
+    if(fs.existsSync(user.image1)){
+      fs.unlinkSync(user.image1)
+    }
+    fs.renameSync(image1.path,image1Sample)
+    
+
+    /// store image 2
+    if(fs.existsSync(user.image2)){
+      fs.unlinkSync(user.image2)
+    }
+    fs.renameSync(image2.path,image2Sample)
+
+    // update path image to database
+    const filter = {phone: user_id}
+    const update = {image1: 'cmnd1'+path.extname(image1.originalname),image2: 'cmnd2'+path.extname(image2.originalname)}
+    User.findOneAndUpdate(filter,update)
+    .then(user=>{
+      console.log(user)
+      return res.json({valid: true,message:"Cập nhập thành công"})
+    })
+    .catch(err=>{
+      console.log(err)
+      return res.json({valid: false,message:"Cập nhập thất bại"})
+    })
+})
+
+router.post('/uploadInformationRegister',cmndUpload, async(req,res)=>{
+  let image1 = req.files['image1'][0]
+  let image2 = req.files['image2'][0]
+  
+  console.log("GET HR")
+  console.log(req.body)
+  console.log(image1)
+  console.log(image2)
+
+  let checkPhone = await User.findOne({phone: req.body.phone})
+  let checkEmail = await User.findOne({email: req.body.email})
+  if(checkPhone){
+    return res.json({valid: false,message: req.body.phone+" is already existed."})
+  }
+  else if(checkEmail){
+    return res.json({valid: false,message:req.body.email+" is already existed."})
+  }
+  else{
+
+    // store image to static
+    //create folder for user
+    let userFolder = path.join(__dirname,'../uploads/'+req.body.email)
+    let image1Sample = path.join(userFolder,'cmnd1'+path.extname(image1.originalname))
+    let image2Sample = path.join(userFolder,'cmnd2'+path.extname(image2.originalname))
+
+    console.log(image1Sample)
+    console.log(image2Sample)
+
+    if(!fs.existsSync(userFolder)){
+      fs.mkdirSync(userFolder, 0744,true);
+    }
+
+    /// store image 1
+    fs.renameSync(image1.path,image1Sample)
+
+    /// store image 2
+    fs.renameSync(image2.path,image2Sample)
+
+    // update database
+    await User({firstLogin: true,status: 'Waiting',secure_status: 0,name: req.body.name,
+    email: req.body.email,
+    phone: req.body.phone,
+    address: req.body.address,
+    birth: req.body.bdate,
+    createdAt: new Date().getTime(),
+    image1: 'cmnd1'+path.extname(image1.originalname),
+    image2: 'cmnd1'+path.extname(image2.originalname)
+    }).save()
+
+    //send email:
+    let link = await sendmail.validateRegister(req.session.user_id,req.body.email)
+    //redirect to login or first login
+    return res.json({valid: true,message: "Mã SMS đã gửi đến email của bạn. Dùng sms code để đăng nhập xác thực , mã sẽ hết trong vòng 90s\n(Link Demo:"+link+")"})
+  }
+})
+
+router.post('/sendOTP',async (req,res)=>{
+  let user = await User.findOne({_id: req.session.user_oid})
+  if(!user){
+    return res.json({valid: false,message:"Please login to make a transaction"})
+  }
+  let link = sendmail.sendSMSCode(req.session.user_id,user.email)
+  //redirect to login or first login
+  return res.json({valid: true,message: "Mã SMS đã gửi đến email của bạn. Dùng OTP code để xác thực giao dịch , mã sẽ hết trong vòng 90s"})
+})
 
 // router.get('/card/create', function(req, res, next) {
 //   console.log(new Date(2022,9,10).getDate())

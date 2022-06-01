@@ -21,7 +21,18 @@ app.engine( 'hbs', hbs.engine( {
   extname: 'hbs', 
   defaultLayout: 'main', 
   layoutsDir: __dirname + '/views/layouts/',
-  partialsDir: __dirname + '/views/menu'
+  partialsDir: __dirname + '/views/menu',
+  helpers: {
+    ifEquals: function(arg1, arg2, options) {
+        return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+    },
+    ifNotEquals: function(arg1, arg2, options) {
+      return (arg1 != arg2) ? options.fn(this) : options.inverse(this);
+  },
+  ifGreater: function(arg1,arg2,options){
+    return (arg1 > arg2) ? options.fn(this) : options.inverse(this);
+  },
+},
 } ) );
 
 app.use(flash());

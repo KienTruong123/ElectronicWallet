@@ -10,7 +10,7 @@ const card = require('../model/mobileCardModel')
 router.get('/', function (req, res, next) {
   //res.render('index', { title: 'KTM', user: req.session.user });
 
-  if (req.session.user_id) {
+  if (req.session.user_id ) {
     res.render('index', { title: 'KTM', user: req.session.user });
   }
   else {
@@ -19,7 +19,11 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/login', function (req, res, next) {
-  if (req.session.user_id) {
+
+  if(req.session.user_id=='admin'){
+    res.redirect('/admin')
+  }
+  else if (req.session.user_id) {
     res.redirect('/')
   }
   else {
