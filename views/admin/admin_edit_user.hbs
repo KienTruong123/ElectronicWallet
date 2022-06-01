@@ -3,11 +3,11 @@
 </head>
 
 
-<section class="vh-100 " style="background-color: #f4f5f7;">
-
+<section class="vh-100 " >
+{{!-- style="background-color: #f4f5f7;" --}}
     <div class="">
         <a href="/admin"><button class="btn btn-primary " 
-        style="position: absolute;font-size: 3vh;left: 1vw;top: 1vw">Quay lại</button></a>
+        style="position: absolute;font-size: 3vh;left: 1vw;top: 1vw; m-2">Quay lại</button></a>
     </div>
     {{!-- Toast --}}
 
@@ -127,7 +127,7 @@
                     </div>
             {{else}}
                <div class="row g-0 text-muted" style="text-align: center;color: gray">
-                    <h4>Chưa có ảnh</h4>
+                    <h4>Chưa có ảnh mặt trước CMND</h4>
                 </div>
             {{/if}}
             {{#if user.image2}}
@@ -136,7 +136,7 @@
                 </div>
             {{else}}
                 <div class="row g-0 text-muted" style="text-align: center;color: gray">
-                    <h4>Chưa có ảnh</h4>
+                    <h4>Chưa có ảnh mặt sau CMND</h4>
                 </div>
             {{/if}}
       </div>

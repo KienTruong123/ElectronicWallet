@@ -47,6 +47,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(require('cookie-parser')(credentials.cookieSecret));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'uploads')));
 
 
 //database setup
@@ -91,5 +92,4 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
 module.exports = app;

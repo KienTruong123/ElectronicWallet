@@ -55,6 +55,7 @@ router.post('/card', async (req, res) => {
     description: "Thẻ cào: " + type
   });
   res.send(JSON.stringify(insertMany));
+  return;
 });
 
 router.post('/history', async (req, res) => {

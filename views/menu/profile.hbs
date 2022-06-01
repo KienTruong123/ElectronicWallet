@@ -5,7 +5,7 @@
                 class="img-fluid my-5 rounded-circle" alt="Cinque Terre" />
             <h5 id="name">{{user.name}}</h5>
             <p></p>
-            <i class="far fa-edit mb-5"></i>
+            <i class="far fa-edit mb-5" id="editProfile"></i>
         </div>
         <div class="col-md-8">
             <div class="card-body p-4 m-1">
@@ -14,11 +14,11 @@
                 <div class="row ps-3">
                     <div class="col-6 mb-3">
                         <h6>Địa chỉ Email</h6>
-                        <p class="text-muted">{{user.email}}</p>
+                        <input type="email" class="" value="{{user.email}}" name="email" id="pro_email" disabled>
                     </div>
                     <div class="col-6 mb-3">
                         <h6>Số điện thoại</h6>
-                        <p class="text-muted">{{user.phone}}</p>
+                         <input type="phone" class="" value="{{user.phone}}" name="phone" id="pro_phone" disabled>
                     </div>
                 </div>
                 <h6>Thông tin cá nhân</h6>
@@ -26,15 +26,22 @@
                 <div class="row ps-3">
                     <div class="col-6 mb-3">
                         <h6>Ngày sinh</h6>
-                        <p class="text-muted">{{user.birth}}</p>
+                         <input type="input" class="" value="{{user.birth}}" name="birth" id="pro_birth" disabled >
                     </div>
                     <div class="col-6 mb-3">
                         <h6>Địa chỉ</h6>
-                        <p class="text-muted">{{user.address}} </p>
+                         <input type="text" class="" value="{{user.address}}" name="address" id="pro_address" disabled>
                     </div>
                 </div>
-                <a class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#multiCollapsePassword">Đổi
+                <div class="row ps-3">
+                    <div class="col-6 mb-3">
+                        <a class="btn btn-warning" data-bs-toggle="collapse" data-bs-target="#multiCollapsePassword">Đổi
                     mật khẩu</a>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <button type="submit"  class="btn btn-success u-btn-submit" onclick="editInformationSave('{{user.birth}}')" disabled> Lưu thay đổi</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

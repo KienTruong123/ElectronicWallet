@@ -1,0 +1,83 @@
+
+<body>
+    <section class="vh-100" id="u-login-background-body">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-lg-8 mb-4 mb-lg-0">
+                    <div class="card mb-3" style="border-radius: .5rem;">
+                        <div class="row g-0">
+                            <div class="col-md-4 u-login-gradient-custom text-center text-white justify-content-center d-flex align-items-center"
+                                style=" border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+                                <img src="https://play-lh.googleusercontent.com/PtMVPSG8gCNkChbJf1Bbk-coBM4dQP5lVC5ZfHJLgkZJT-AbuDfhyIx4thEB3I9u9Lg"
+                                    alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
+                            </div>
+                            <div class="col-md-8 u-login-card-padding">
+                                <div class="card-body p-4">
+                                    <!-- TODO: DO SOMETHING WITH ALERT-->
+                                     {{#if flash}}
+                                    <!-- TODO: DO SOMETHING WITH ALERT-->
+                                    <div class="alert alert-{{flash.type}}" role="alert">
+                                        {{flash.message}}
+                                    </div>
+                                    {{/if}}
+
+                                    <h3 class="text-center mb-3">{{title}}</h3>
+                                     {{#unless req_reset}}
+                                    <div class="alert alert-info" role="alert">
+                                        Do bạn đăng nhập lần đầu tiên, trước hết hãy đổi mật khẩu.
+                                    </div>
+                                    {{/unless}}
+
+                                    <div class="row pt-1">
+                                        <!-- TODO: FILL IN URL IN ACTION-->
+                                        
+                                            {{#if req_reset}}
+                                            <form action="/resetPassword" method="POST" oninput='password2.setCustomValidity(password1.value != password2.value ? "Không khớp với mật khẩu mới" : "")'>
+                                            <div class="form-group pb-3">
+                                                <label for="password1" class="fw-bold pb-3">Mật khẩu mới</label>
+                                                <input type="password" class="form-control p-2" id="password1"
+                                                    placeholder="Vui lòng nhập mật khẩu" name="password1">
+                                            </div>
+                                            <div class="form-group pb-3">
+                                                <label for="password2" class="fw-bold pb-3">Nhập lại Mật khẩu mới</label>
+                                                <input type="password" class="form-control p-2" id="password2"
+                                                    placeholder="Vui lòng Nhập lại Mật khẩu mới" name="password2">
+                                            </div>
+                                            <div class="d-flex justify-content-center">
+                                                <button type="submit" class="btn btn-success u-login-btn-login">Khôi phục mật khẩu</button>
+                
+                                            </div>
+                                            </form>
+
+                                            {{else}}
+
+                                            <form action="/firstlogin" method="POST" oninput='password2.setCustomValidity(password1.value != password2.value ? "Không khớp với mật khẩu mới" : "")'>
+                                                <div class="form-group pb-3">
+                                                    <label for="password1" class="fw-bold pb-3">Mật khẩu mới</label>
+                                                    <input type="password" class="form-control p-2" id="password1"
+                                                        placeholder="Vui lòng nhập mật khẩu" name="password1">
+                                                </div>
+                                                <div class="form-group pb-3">
+                                                    <label for="password2" class="fw-bold pb-3">Nhập lại Mật khẩu mới</label>
+                                                    <input type="password" class="form-control p-2" id="password2"
+                                                        placeholder="Vui lòng Nhập lại Mật khẩu mới" name="password2">
+                                                </div>
+                                                <div class="d-flex justify-content-center">
+                                                    <button type="submit" class="btn btn-success u-login-btn-login">Lưu thay đổi</button>
+                                                </div>
+                                            </form>
+
+                                            {{/if }}
+                                             
+                                            <!-- TODO: FILL IN URL SUBMIT BUTTON-->
+                                           
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>

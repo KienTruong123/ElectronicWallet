@@ -1,5 +1,22 @@
 
 
+<script src="http://code.jquery.com/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script>
+$(document).ready(function(){
+    $('#edit').click(function(){ 
+        $("input").prop('disabled', false);
+});
+});
+</script>
+<form>
+<input type="text" name="1" id="1" disabled>
+<input type="text" name="2" id="2" disabled>
+<input type="text" name="3" id="3" disabled>
+<input type="text" name="4" id="4" disabled>
+<input type="submit" name="submit" value="submit">
+</form>
+<div id="edit">Click to Enable</div>
+
 <div class="container">
     <input id="image1" type="file" accept="image/*" single>
     <input id="image2" type="file" accept="image/*" single>

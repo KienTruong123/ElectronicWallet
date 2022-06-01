@@ -18,6 +18,8 @@ moment.locale('vi');
 
 router.use(function (req, res, next) {
   if(req.session.user_id != 'admin'){
+    console.log("USER ADMIN")
+    console.log(req.session.user_id)
     return res.redirect('/login')
   }
   req.flash('admin',true)
@@ -112,7 +114,7 @@ router.get('/', async function(req, res, next) {
   let active_list = await User.find({"status":"Active"}).sort({createdAt: 'desc'}).lean()
   let waiting_list = await User.find({"status":{$in:["Waiting","Updating"]}}).sort({createdAt: 'desc'}).lean()
   let ban_list = await User.find({"status":"Ban"}).sort({createdAt: 'desc'}).lean()
-  let lock_list = await User.find({secure_status: { $gt: 4 }}).sort({lockedAt: 'asc'}).lean()
+  let lock_list = await User.find({secure_status: { $gt: 5 }}).sort({lockedAt: 'asc'}).lean()
   let restrictType = ["Withdraw","Transfer"]
   // because deposit higher than 5.000.000 VND is allow 
   let trade_list = await Trade.find({amount: {$gt: 5000000},status: 'Waiting',type :{$in : restrictType}}).sort({createdAt: 'desc'}).lean()

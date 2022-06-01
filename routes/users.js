@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const user = require('../model/userModel')
 const bcrypt = require('bcrypt')
-const saltRounds = 10;
+const saltRounds = 5;
 var sendmail = require('../libs/sendmail');
 var random = require('../libs/random');
 const a_user = require('../model/userModel')
@@ -13,8 +13,25 @@ const SMS = require('../model/smsModel')
 const fs = require('fs');
 const multer = require('multer')
 const path = require('path')
-const uploader = multer({dest: path.join(__dirname,"..\\uploads")})
+const uploader = multer({ dest: path.join(__dirname, "..\\uploads") })
 
+router.post('/details',async (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  if(req.body.id=="Viettel"||req.body.id=="Mobifone"||req.body.id=="Vinaphone"){
+    res.send(JSON.stringify({ err: false, message: req.body.id}));
+    return;
+  }
+
+  var userfindmail= await a_user.findOne({ _id: req.body.id } )
+  var uname = userfindmail;
+  if(uname!=null){
+    res.send(JSON.stringify({ err: false, message:  uname.name}));
+    return;
+  }
+  res.send(JSON.stringify({ err: true, message: "Người dùng không xác định"}));
+
+
+})
 /* GET users listing. */
 // middleware này dùng để test
 router.get('/', function (req, res, next) {
@@ -22,31 +39,54 @@ router.get('/', function (req, res, next) {
   //res.render('admin_edit_user');
 });
 
+
 router.get('/:id', (req, res) => {
   res.render('admin_edit_user')
 })
 
 router.post('/changepassword', async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
-  var findUser = await user.findOneAndUpdate({ phone: req.session.user_id }, { password: hashpasswordnew });
-  var result = findUser;
-  if (result == null) { 
-    res.send(JSON.stringify({ err: true, message: "Bạn không có quyền truy cập vào hệ thống!" }));
-    return;
-  }
-  var match = bcrypt.compareSync(req.body.password0, req.body.password1)
-  if (match==null) {
+  var changepass = await user.findOne({ phone: req.session.user_id });
+  var check = bcrypt.compareSync(req.body.password0, changepass.password);
+  if (check) {
+    var hashpasswordnew = bcrypt.hashSync(req.body.password1, saltRounds);
+    var update = await a_user.findOneAndUpdate(
+      { phone: req.session.user_id },
+      { password: hashpasswordnew });
+    if (update != null) {
+      res.send(JSON.stringify({ err: false, message: "Đổi mật khẩu thành công!" }));
+      return;
+    }
+  } else {
     res.send(JSON.stringify({ err: true, message: "Mật khẩu hiện tại không đúng!" }));
+  }
+});
+
+router.post('/edit', async (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  var userfind= await a_user.findOne({ _id: { $ne: req.session.user._id }, phone: req.body.phone } )
+  if(userfind!=null){
+    res.send(JSON.stringify({ err: true, message: "Số điện thoại tồn tại!" }));
     return;
   }
-  var hashpasswordnew = bcrypt.hashSync(req.body.password1, saltRounds);
-  var updateUser = await user.findOneAndUpdate({ phone: req.session.user_id }, { password: hashpasswordnew });
 
-  if (updateUser)
-    res.send(JSON.stringify({ err: false, message: "Đổi mật khẩu thành công!" }));
-  else
-    res.send(JSON.stringify({ err: true, message: "Lỗi hệ thống vui lòng thử lại sau!" }));
-})
+  var userfindmail= await a_user.findOne({ _id: { $ne: req.session.user._id }, phone: req.body.email } )
+  if(userfindmail!=null){
+    res.send(JSON.stringify({ err: true, message: "Email tồn tại!" }));
+    return;
+  }
+
+  var update = await a_user.findOneAndUpdate(
+    { phone: req.session.user_id },
+    { birth: req.body.birth, email: req.body.email, phone: req.body.phone, address:req.body.address  });
+  var us=update;
+  if (us != null) {
+    req.session.user=us;
+    res.send(JSON.stringify({ err: false, message: "Cập nhập thông tin thành công! Vui lòng đăng nhập lại!" }));
+    return;
+  }
+  res.send(JSON.stringify({ err: true, message: "Cập nhập thông tin thất bại" }));
+});
 
 router.post('/deposit', async function (req, res, next) {
   try {
@@ -153,7 +193,7 @@ router.post('/withdraw', async function (req, res, next) {
           return;
         }
         else if ((amount % 50000) != 0) {
-          console.log(result.balance)
+          //console.log(result.balance)
           res.send(JSON.stringify({ color: 'red', status: 'Số tiền rút là bội của 50.000đ' }))
           return;
         }
@@ -165,7 +205,7 @@ router.post('/withdraw', async function (req, res, next) {
             )
             const update_a_user = await a_user.updateOne(
               { phone: req.session.user_id },
-              { $inc: { balance: -amount*1.05 } }
+              { $inc: { balance: -amount * 1.05 } }
             )
             const insertMany2 = await Trade.insertMany({
               sender_id: req.session.user_oid,
@@ -225,12 +265,12 @@ router.post('/transfer', async function (req, res, next) {
     if (t_reveiver_otp == null) {
       res.send(JSON.stringify({ color: 'red', status: 'Thiếu mã OTP' }))
       return;
-    } 
+    }
     else if (t_reveiver_money < 1) {
       res.send(JSON.stringify({ color: 'red', status: 'Số tiền chuyển phải lớn hơn 1' }))
       return;
     }
-    let smsCode = await SMS.findOne({sender_id: req.session.user_id}).lean()
+    let smsCode = await SMS.findOne({ sender_id: req.session.user_id }).lean()
     //console.log(smsCode)
 
     await a_user.findOne({
@@ -251,7 +291,7 @@ router.post('/transfer', async function (req, res, next) {
           }
           else {
             //OTP CHECK
-            if(t_reveiver_otp!= smsCode.code || new Date().getTime() - smsCode.createdAt >=60000){
+            if (t_reveiver_otp != smsCode.code || new Date().getTime() - smsCode.createdAt >= 60000) {
               res.send(JSON.stringify({ color: 'red', status: 'OTP không hợp lệ hoặc đã hết hạn.' }))
               return;
             }
@@ -358,131 +398,132 @@ router.post('/transfer', async function (req, res, next) {
 
 })
 
-const cmndUpload = uploader.fields([{name: 'image1',maxCount: 1},{name:'image2',maxCount:1}])
-router.post('/uploadCMND',cmndUpload, async (req,res)=>{
+const cmndUpload = uploader.fields([{ name: 'image1', maxCount: 1 }, { name: 'image2', maxCount: 1 }])
+router.post('/uploadCMND', cmndUpload, async (req, res) => {
   let image1 = req.files['image1'][0]
   let image2 = req.files['image2'][0]
   let user_id = req.session.user_id
-  
-  console.log("GET HR")
 
-  console.log("User id :"+user_id)
+  //console.log("GET HR")
+
+  //console.log("User id :" + user_id)
   //console.log(image1[0].path)
 
 
-  let user = await User.findOne({phone: user_id}).lean()
-  if(!user){
-    return res.json({valid: false,message:"Can't find user with id"+user_id})
+  let user = await User.findOne({ phone: user_id }).lean()
+  if (!user) {
+    return res.json({ valid: false, message: "Can't find user with id" + user_id })
   }
-    console.log(user)
-    console.log(user.email)
-    console.log(image1)
-    console.log(path.extname(image1.path))
-    //create folder for user
-    let userFolder = path.join(__dirname,'../uploads/'+user.email)
-    let image1Sample = path.join(userFolder,'cmnd1'+path.extname(image1.originalname))
-    let image2Sample = path.join(userFolder,'cmnd2'+path.extname(image2.originalname))
+  //console.log(user)
+  //console.log(user.email)
+  //console.log(image1)
+  //console.log(path.extname(image1.path))
+  //create folder for user
+  let userFolder = path.join(__dirname, '../uploads/' + user.email)
+  let image1Sample = path.join(userFolder, 'cmnd1' + path.extname(image1.originalname))
+  let image2Sample = path.join(userFolder, 'cmnd2' + path.extname(image2.originalname))
 
-    console.log(image1Sample)
-    console.log(image2Sample)
+  //console.log(image1Sample)
+  //console.log(image2Sample)
 
-    if(!fs.existsSync(userFolder)){
-      fs.mkdirSync(userFolder, 0744,true);
-    }
+  if (!fs.existsSync(userFolder)) {
+    fs.mkdirSync(userFolder, 0744, true);
+  }
 
-    /// store image 1
-    if(fs.existsSync(user.image1)){
-      fs.unlinkSync(user.image1)
-    }
-    fs.renameSync(image1.path,image1Sample)
-    
+  /// store image 1
+  if (fs.existsSync(user.image1)) {
+    fs.unlinkSync(user.image1)
+  }
+  fs.renameSync(image1.path, image1Sample)
 
-    /// store image 2
-    if(fs.existsSync(user.image2)){
-      fs.unlinkSync(user.image2)
-    }
-    fs.renameSync(image2.path,image2Sample)
 
-    // update path image to database
-    const filter = {phone: user_id}
-    const update = {image1: 'cmnd1'+path.extname(image1.originalname),image2: 'cmnd2'+path.extname(image2.originalname)}
-    User.findOneAndUpdate(filter,update)
-    .then(user=>{
-      console.log(user)
-      return res.json({valid: true,message:"Cập nhập thành công"})
+  /// store image 2
+  if (fs.existsSync(user.image2)) {
+    fs.unlinkSync(user.image2)
+  }
+  fs.renameSync(image2.path, image2Sample)
+
+  // update path image to database
+  const filter = { phone: user_id }
+  const update = { image1: 'cmnd1' + path.extname(image1.originalname), image2: 'cmnd2' + path.extname(image2.originalname) }
+  User.findOneAndUpdate(filter, update)
+    .then(user => {
+      //console.log(user)
+      return res.json({ valid: true, message: "Cập nhập thành công" })
     })
-    .catch(err=>{
-      console.log(err)
-      return res.json({valid: false,message:"Cập nhập thất bại"})
+    .catch(err => {
+      //console.log(err)
+      return res.json({ valid: false, message: "Cập nhập thất bại" })
     })
 })
 
-router.post('/uploadInformationRegister',cmndUpload, async(req,res)=>{
+router.post('/uploadInformationRegister', cmndUpload, async (req, res) => {
   let image1 = req.files['image1'][0]
   let image2 = req.files['image2'][0]
-  
-  console.log("GET HR")
-  console.log(req.body)
-  console.log(image1)
-  console.log(image2)
 
-  let checkPhone = await User.findOne({phone: req.body.phone})
-  let checkEmail = await User.findOne({email: req.body.email})
-  if(checkPhone){
-    return res.json({valid: false,message: req.body.phone+" is already existed."})
+  //console.log("GET HR")
+  //console.log(req.body)
+  //console.log(image1)
+  //console.log(image2)
+
+  let checkPhone = await User.findOne({ phone: req.body.phone })
+  let checkEmail = await User.findOne({ email: req.body.email })
+  if (checkPhone) {
+    return res.json({ valid: false, message: req.body.phone + " is already existed." })
   }
-  else if(checkEmail){
-    return res.json({valid: false,message:req.body.email+" is already existed."})
+  else if (checkEmail) {
+    return res.json({ valid: false, message: req.body.email + " is already existed." })
   }
-  else{
+  else {
 
     // store image to static
     //create folder for user
-    let userFolder = path.join(__dirname,'../uploads/'+req.body.email)
-    let image1Sample = path.join(userFolder,'cmnd1'+path.extname(image1.originalname))
-    let image2Sample = path.join(userFolder,'cmnd2'+path.extname(image2.originalname))
+    let userFolder = path.join(__dirname, '../uploads/' + req.body.email)
+    let image1Sample = path.join(userFolder, 'cmnd1' + path.extname(image1.originalname))
+    let image2Sample = path.join(userFolder, 'cmnd2' + path.extname(image2.originalname))
 
-    console.log(image1Sample)
-    console.log(image2Sample)
+    //console.log(image1Sample)
+    //console.log(image2Sample)
 
-    if(!fs.existsSync(userFolder)){
-      fs.mkdirSync(userFolder, 0744,true);
+    if (!fs.existsSync(userFolder)) {
+      fs.mkdirSync(userFolder, 0744, true);
     }
 
     /// store image 1
-    fs.renameSync(image1.path,image1Sample)
+    fs.renameSync(image1.path, image1Sample)
 
     /// store image 2
-    fs.renameSync(image2.path,image2Sample)
+    fs.renameSync(image2.path, image2Sample)
 
     // update database
-    await User({firstLogin: true,status: 'Waiting',secure_status: 0,name: req.body.name,
-    email: req.body.email,
-    phone: req.body.phone,
-    address: req.body.address,
-    birth: req.body.bdate,
-    createdAt: new Date().getTime(),
-    image1: 'cmnd1'+path.extname(image1.originalname),
-    image2: 'cmnd1'+path.extname(image2.originalname)
+    await User({
+      firstLogin: true, status: 'Waiting', secure_status: 0, name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      address: req.body.address,
+      birth: req.body.bdate,
+      createdAt: new Date().getTime(),
+      image1: 'cmnd1' + path.extname(image1.originalname),
+      image2: 'cmnd1' + path.extname(image2.originalname)
     }).save()
 
     //send email:
     // let link = sendmail.validateRegister(phone,req.body.email)
     //send email:
-    let link = sendmail.validateRegister(req.body.phone,req.body.email)
+    let link = sendmail.validateRegister(req.body.phone, req.body.email)
     //redirect to login or first login
-    return res.json({valid: true,message: "Mật khẩu tạm thời đã được gửi dưới dạng 6 số vào email của bạn. Vui lòng kiểm tra\n"})
+    return res.json({ valid: true, message: "Mật khẩu tạm thời đã được gửi dưới dạng 6 số vào email của bạn. Vui lòng kiểm tra\n" })
   }
 })
 
-router.post('/sendOTP',async (req,res)=>{
-  let user = await User.findOne({_id: req.session.user_oid})
-  if(!user){
-    return res.json({valid: false,message:"Please login to make a transaction"})
+router.post('/sendOTP', async (req, res) => {
+  let user = await User.findOne({ _id: req.session.user_oid })
+  if (!user) {
+    return res.json({ valid: false, message: "Please login to make a transaction" })
   }
-  let link = sendmail.sendSMSCode(req.session.user_id,user.email)
+  let link = sendmail.sendSMSCode(req.session.user_id, user.email)
   //redirect to login or first login
-  return res.json({valid: true,message: "Mã SMS đã gửi đến email của bạn. Dùng OTP code để xác thực giao dịch , mã sẽ hết trong vòng 60s"})
+  return res.json({ valid: true, message: "Mã SMS đã gửi đến email của bạn. Dùng OTP code để xác thực giao dịch , mã sẽ hết hạn trong vòng 60s" })
 })
 
 // router.get('/card/create', function(req, res, next) {

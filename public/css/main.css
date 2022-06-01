@@ -62,7 +62,10 @@ a:active {
 #d-password,
 #d-id-card,
 #d-id-profile,
-#d-show-info{
+#d-show-info,
+#deposit,
+#transfer,
+#withdraw{
     border-radius: 20px 20px;
     background-color: rgb(240, 240, 240);
 }

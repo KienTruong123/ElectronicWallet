@@ -1,6 +1,7 @@
 
 $('#slQuantity').hide();
 $('#d-show-info').hide();
+
 //----- USER WITHDRAW / DEPOSIT
 window.addEventListener("load", () => {
     let u_withdraw = document.querySelector("#money2")
@@ -240,10 +241,36 @@ function btnBuyCard() {
 
 function cleanBuyCard() {
     document.getElementById("selectedCard").innerHTML = "";
-    document.getElementById("card-quantity").value = 0;
+    document.getElementById("card-quantity").value = 1;
     document.getElementById("slcard").value = 0;
     document.getElementById("totalPriceCard").innerHTML = "0";
 }
+
+//EDIT PROFILE
+function editInformationSave(birth1){
+    var email=document.getElementById("pro_email").value;
+    var phone=document.getElementById("pro_phone").value;
+    var address=document.getElementById("pro_address").value;
+    var birth;
+
+    if (document.getElementById("pro_birth").value=='')
+        birth=birth1;
+    else
+        birth=document.getElementById("pro_birth").value;
+    $.post("/users/edit",{
+        email: email,
+        phone: phone,
+        address: address,
+        birth: birth},
+        function (data,status) {
+            alert(data.message);
+            if(!data.err){
+                window.location.replace("/logout");
+            }
+        }
+    );
+}
+
 
 // AJAX CHANGE PASSWORD
 $("#formChangePass").submit(function (e) {
@@ -337,12 +364,23 @@ async function viewHistory(id) {
     let month = date.getMonth() + 1;
     let dt = date.getDate();
     var mathe = '';
+    var sder = data.sender_id;
+    var rcv=data.receiver_id;
+    // if(data.sender_id.length<7)
+    //     sder = data.sender_id;
+    // else
+    //     sder = await viewUserName(data.sender_id);
+        
+    // if(data.receiver_id.length<7)
+    //     rcv = data.receiver_id;
+    // else
+    //     rcv = await viewUserName(data.receiver_id)
     var head = `<div class="row">
                     <div class="col-4">
                         <p>Người gửi:</p>
                     </div>
                     <div class="col">
-                    ${data.sender_id}
+                    ${sder}
                     </div>
                 </div>
                 <div class="row">
@@ -350,7 +388,7 @@ async function viewHistory(id) {
                         <p>Người nhận: </p>
                     </div>
                     <div class="col">
-                    ${data.receiver_id}
+                    ${rcv}
                     </div>
                 </div>`
 
@@ -364,11 +402,10 @@ async function viewHistory(id) {
                     </div>
                 </div>`
         if (data.type === "CardPay") {
-            console.log("sks")
             for (let index = 0; index < data.mobile_card.length; index++) {
                 var cardcode = await viewDetailCard(data.mobile_card[index])
                 mathe += `<div class="row">  <div class="col-4">  <p>Mã thẻ: </p></div> <div class="col">`;
-                var element = `<button class='btn btn-primary ms-3 mb-3' >${cardcode}</button>`
+                var element = `<button class='btn btn-primary mb-3 me-2' >${cardcode}</button>`
                 mathe += element;
                 mathe += `</div></div>`;
             }
@@ -428,9 +465,26 @@ async function viewDetailCard(id) {
         },
         function (data, status) {
             if (data.err != null) {
-                alert(data.message);
+                alert(data.err)
             } else {
                 rdata = data.code;
+            }
+        })
+    return rdata;
+};
+
+
+async function viewUserName(id) {
+    let rdata;
+    await $.post("/users/details",
+        {
+            id: id
+        },
+        function (data, status) {
+            if (data.err == true) {
+                rdata=id;
+            } else {
+                rdata = data.message;
             }
         })
     return rdata;
@@ -501,9 +555,6 @@ function saveModal(e) {
 }
 
 function adminUpdateUser(id, type) {
-    console.log("ADMIN UDDATE")
-    console.log(id)
-    console.log(type)
     $.ajax({
         url: '/admin/updateUser',
         method: 'post',
@@ -524,9 +575,6 @@ function adminUpdateUser(id, type) {
 }
 
 function adminUpdateTrade(id, type) {
-    console.log("ADMIN UPDATE TRANSACTION")
-    console.log(id)
-    console.log(type)
     $.ajax({
         url: '/admin/updateTrade',
         method: 'post',
@@ -580,7 +628,6 @@ async function convert2Buffer(blob) {
     return new Promise((resolve) => {
         const reader = new FileReader()
         reader.onload = () => {
-            console.log(reader.result)
             resolve(reader.result)
         }
         reader.readAsArrayBuffer(blob)
@@ -596,8 +643,6 @@ function toBase64(buffer) {
     for (var i = 0; i < len; i++) {
         binary += String.fromCharCode(bytes[i]);
     }
-    console.log("window btoa")
-    console.log(window.btoa(binary))
     return window.btoa(binary);
 }
 
@@ -621,9 +666,6 @@ async function sendInformationRegister(e) {
     data.set('name', name)
     data.set('bdate', bdate)
     data.set('address', address)
-
-    console.log(phone)
-    console.log(data)
 
     $.ajax({
         url: 'users/uploadInformationRegister',
@@ -688,7 +730,7 @@ async function sendInformationRegister(e) {
     console.log($('#user_cmnd1'))
     console.log($('#user_cmnd2'))
     let image1 = $('#user_cmnd1').prop('files')[0]
-    let image2 = $('#user_cmnd2').prop('files')[0]
+   let image2 = $('#user_cmnd2').prop('files')[0]
 
     if(!phone || !email || !name || !bdate || !address){
         $('#register_error').removeClass('alert-success').addClass('alert-danger').html("Hãy nhập đủ thông tin đăng kí.")
@@ -734,5 +776,47 @@ async function sendInformationRegister(e) {
         }
     });
 }
+//-------------------
+//resetPassOTP
+function sendResetPassOTP(e) {
+    let email = $('#resetpass_email').val()
+    let phone = $('#resetpass_phone').val()
+    if(!email || email.length ==0)
+        {$('#resetpass_error').removeClass('alert-success').addClass('alert-danger').html('Vui lòng nhập email')
+        return;}
+    if(!phone || phone.length== 0)
+        {$('#resetpass_error').removeClass('alert-success').addClass('alert-danger').html('Vui lòng nhập số điện thoại')
+        return; }
 
+    $.ajax({
+        url: '/reset',
+        cache: false,
+        data: {email: email,phone: phone},
+        method: 'POST',
+        type: 'POST', // For jQuery < 1.9
+        success: function(data){
+           if(data.valid){
+                $('#resetpass_error').removeClass('alert-danger').addClass('alert-success').html(data.message)
+           }
+           else{
+            $('#resetpass_error').removeClass('alert-success').addClass('alert-danger').html(data.message)
+           }
+        },
+        error:function(error){
+            $('#register_error').removeClass('alert-success').addClass('alert-danger').html(data.message)
+            alert('Error: ',"Có lỗi phát sinh :(")
+        }
+    });
+}
+
+$(document).ready(function(){
+    $('#editProfile').click(function(){ 
+        $("input").prop('disabled', false);
+        $("button").prop('disabled', false);
+});
+
+$('#pro_birth').click(function(){ 
+    document.getElementById('pro_birth').type = 'date';
+});
+});
 //-----------------------------------------------------------------------------------------------------------
